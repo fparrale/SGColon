@@ -1,0 +1,469 @@
+<div class="admin-container">
+  <!-- Header with Navigation -->
+  <div class="admin-header">
+    <div class="admin-header-content">
+      <div class="admin-header-title">
+        <i class="fas fa-file-text"></i>
+        <div class="admin-header-text">
+          <h1>{{ 'admin.questions.title' | translate }}</h1>
+          <p class="admin-header-subtitle">{{ 'admin.questions.subtitle' | translate }}</p>
+        </div>
+      </div>
+      <div class="admin-header-actions">
+        <button class="admin-btn-back" (click)="goToDashboard()">
+          <i class="fas fa-arrow-left"></i>
+          {{ 'admin.common.backToDashboard' | translate }}
+        </button>
+        <button class="admin-btn-logout admin-btn-danger" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          {{ 'auth.logout' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success & Error Messages handled by NotificationService (top banner) -->
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>{{ 'admin.questions.loadingQuestions' | translate }}</p>
+  </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading()) {
+  <div class="questions-content">
+    <!-- AI Generator Section -->
+    <div class="generator-section">
+      <div class="generator-header" (click)="toggleGenerator()">
+        <div class="generator-title">
+          <i class="fas fa-lightbulb"></i>
+          <h2>{{ 'admin.questions.automaticGenerator' | translate }}</h2>
+        </div>
+        <button class="btn-toggle" [ngClass]="{ 'open': isGeneratorOpen() }">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+
+      @if (isGeneratorOpen()) {
+      <div class="generator-content">
+        <form [formGroup]="generatorForm">
+          <div class="form-grid">
+            <!-- Categoría -->
+            <div class="form-group">
+              <label for="gen-category">{{ 'admin.questions.category' | translate }}</label>
+              <select id="gen-category" class="form-control" formControlName="categoryId"
+                [class.is-invalid]="generatorForm.get('categoryId')?.invalid && generatorForm.get('categoryId')?.touched">
+                <option [value]="null">{{ 'admin.questions.generation.selectCategory' | translate }}</option>
+                @for (cat of categories(); track cat.id) {
+                <option [value]="cat.id">{{ cat.name }}</option>
+                }
+              </select>
+              <div class="invalid-feedback"
+                *ngIf="generatorForm.get('categoryId')?.invalid && generatorForm.get('categoryId')?.touched">
+                <small *ngIf="generatorForm.get('categoryId')?.hasError('required')">{{
+                  'admin.questions.categoryRequired' | translate }}</small>
+              </div>
+            </div>
+
+            <!-- Dificultad -->
+            <div class="form-group">
+              <label for="gen-difficulty">{{ 'admin.questions.difficultyLabel' | translate }}</label>
+              <div class="difficulty-input">
+                <input id="gen-difficulty" type="range" min="1" max="5" formControlName="difficulty" class="form-range">
+                <span class="difficulty-value">{{ generatorForm.get('difficulty')?.value }}</span>
+              </div>
+            </div>
+
+            <!-- Cantidad -->
+            <div class="form-group">
+              <label for="gen-quantity">{{ 'admin.questions.quantityLabel' | translate }}</label>
+              <input id="gen-quantity" type="number" min="1" max="50" formControlName="quantity"
+                [class.is-invalid]="generatorForm.get('quantity')?.invalid && generatorForm.get('quantity')?.touched"
+                class="form-control">
+              <div class="invalid-feedback"
+                *ngIf="generatorForm.get('quantity')?.invalid && generatorForm.get('quantity')?.touched">
+                <small *ngIf="generatorForm.get('quantity')?.hasError('required')">{{ 'admin.questions.quantityRequired'
+                  | translate }}</small>
+                <small *ngIf="generatorForm.get('quantity')?.hasError('invalidQuantity')">{{
+                  'admin.questions.quantityRange' | translate }}</small>
+              </div>
+            </div>
+
+            <!-- Idioma -->
+            <div class="form-group">
+              <label for="gen-language">{{ 'admin.questions.language' | translate }}</label>
+              <select id="gen-language" class="form-control" formControlName="language">
+                <option value="es">{{ 'common.spanish' | translate }}</option>
+                <option value="en">{{ 'common.english' | translate }}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+
+        <!-- Mensaje de estado handled by NotificationService -->
+
+        <!-- Botón Generar -->
+        <button class="btn btn-primary btn-generate" (click)="generateQuestionsWithAI()" [disabled]="isGenerating()">
+          @if (!isGenerating()) {
+          <i class="fas fa-lightbulb"></i>
+          {{ 'admin.questions.generateWithAi' | translate }}
+          } @else {
+          <span class="spinner-small"></span>
+          {{ 'admin.questions.generating' | translate }}
+          }
+        </button>
+      </div>
+      }
+    </div>
+
+    <!-- CSV Import Section -->
+    <div class="generator-section csv-import-section">
+      <div class="generator-header" (click)="toggleCsvImportSection()">
+        <div class="generator-title">
+          <i class="fas fa-file-csv"></i>
+          <h2>{{ 'admin.questions.csvImportTitle' | translate }}</h2>
+        </div>
+        <button class="btn-toggle" [ngClass]="{ 'open': isCsvImportOpen() }">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+
+      @if (isCsvImportOpen()) {
+      <div class="generator-content">
+        <div class="csv-info">
+          <p><strong>{{ 'admin.questions.csvFormatRequired' | translate }}</strong></p>
+          <code
+            class="csv-headers">category_id, difficulty, statement, option_1, option_2, option_3, option_4, correct_option_index, explanation_correct, explanation_incorrect, source_citation, language</code>
+          <p class="csv-note">
+            <i class="fas fa-info-circle"></i>
+            {{ 'admin.questions.csvNote' | translate }}
+          </p>
+          <button
+            type="button"
+            class="btn btn-secondary btn-download-template"
+            (click)="downloadCsvTemplate()"
+            [disabled]="isDownloadingTemplate()">
+            @if (isDownloadingTemplate()) {
+              <span class="spinner-small"></span>
+            } @else {
+              <i class="fas fa-download"></i>
+            }
+            {{ 'admin.questions.downloadTemplate' | translate }}
+          </button>
+        </div>
+
+        <div class="csv-upload-area">
+          <input type="file" id="csvFileInput" accept=".csv" (change)="onCsvFileSelected($event)"
+            [disabled]="isImportingCsv()" class="csv-file-input">
+          <label for="csvFileInput" class="csv-upload-label" [class.disabled]="isImportingCsv()">
+            @if (!isImportingCsv()) {
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>{{ 'admin.questions.selectCsvFile' | translate }}</span>
+            } @else {
+            <span class="spinner-small"></span>
+            <span>{{ 'admin.questions.importing' | translate }}</span>
+            }
+          </label>
+        </div>
+
+        <!-- Import Results -->
+        @if (lastImportResult()) {
+        <div class="import-results" [ngClass]="{'has-errors': lastImportResult()!.errors > 0}">
+          <div class="import-summary">
+            <span class="import-stat success">
+              <i class="fas fa-check-circle"></i>
+              {{ lastImportResult()!.imported }} {{ 'admin.questions.imported' | translate }}
+            </span>
+            @if (lastImportResult()!.errors > 0) {
+            <span class="import-stat error">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ lastImportResult()!.errors }} {{ 'admin.questions.errors' | translate }}
+            </span>
+            }
+          </div>
+
+          @if (lastImportResult()!.error_details && lastImportResult()!.error_details.length > 0) {
+          <div class="error-details">
+            <p><strong>{{ 'admin.questions.errorDetails' | translate }}</strong></p>
+            <ul>
+              @for (err of lastImportResult()!.error_details; track err) {
+              <li>{{ err }}</li>
+              }
+            </ul>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <h3 class="filters-title">{{ 'admin.questions.filtersAndSearch' | translate }}</h3>
+      <form [formGroup]="filterForm">
+        <div class="filters-grid">
+          <!-- Search -->
+          <div class="filter-item">
+            <label>{{ 'admin.questions.search' | translate }}</label>
+            <div class="search-input-wrapper">
+              <i class="fas fa-search"></i>
+              <input type="text" [placeholder]="'admin.questions.searchPlaceholder' | translate"
+                formControlName="search" maxlength="100" class="search-input">
+            </div>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-item">
+            <label>{{ 'admin.questions.category' | translate }}</label>
+            <select formControlName="category" class="form-control">
+              <option [value]="null">{{ 'admin.questions.allCategories' | translate }}</option>
+              @for (cat of categories(); track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Status Filter (Verified/Pending) -->
+          <div class="filter-item">
+            <label>{{ 'admin.questions.status' | translate }}</label>
+            <select formControlName="status" class="form-control">
+              <option value="all">{{ 'admin.questions.all' | translate }}</option>
+              <option value="verified">{{ 'admin.questions.filter.verified' | translate }}</option>
+              <option value="pending">{{ 'admin.questions.filter.pending' | translate }}</option>
+            </select>
+          </div>
+
+          <!-- Active Status Filter (Active/Inactive) -->
+          <div class="filter-item">
+            <label>{{ 'admin.questions.activeStatus' | translate }}</label>
+            <select formControlName="activeStatus" class="form-control">
+              <option value="active">{{ 'admin.questions.filter.activeOnly' | translate }}</option>
+              <option value="inactive">{{ 'admin.questions.filter.inactiveOnly' | translate }}</option>
+              <option value="all">{{ 'admin.questions.filter.allQuestions' | translate }}</option>
+            </select>
+          </div>
+
+          <!-- Results Count -->
+          <div class="filter-item results-count">
+            <p>{{ filteredQuestions().length }} {{ filteredQuestions().length === 1 ? ('admin.questions.questionFound' |
+              translate) : ('admin.questions.questionsFound' | translate) }}</p>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bulk Actions -->
+    @if (allQuestions().length > 0) {
+    <div class="bulk-actions-section">
+      <div class="bulk-actions-header">
+        <div class="bulk-info">
+          <i class="fas fa-layer-group"></i>
+          <span>{{ 'admin.questions.bulkActions' | translate }}</span>
+          <span class="bulk-stats">
+            ({{ verifiedQuestionsCount }} {{ 'admin.questions.verified' | translate }} |
+            {{ pendingQuestionsCount }} {{ 'admin.questions.pending' | translate }})
+          </span>
+        </div>
+        <div class="bulk-actions-buttons">
+          @if (pendingQuestionsCount > 0) {
+          <button class="btn btn-verify-all" (click)="verifyAllPending()" [disabled]="isLoading()"
+            [title]="'admin.questions.verifyAllPendingTitle' | translate">
+            <i class="fas fa-check-double"></i>
+            {{ 'admin.questions.verifyAllPending' | translate }}
+          </button>
+          }
+          @if (verifiedQuestionsCount > 0) {
+          <button class="btn btn-unverify-all" (click)="unverifyAll()" [disabled]="isLoading()"
+            [title]="'admin.questions.unverifyAllTitle' | translate">
+            <i class="fas fa-times-circle"></i>
+            {{ 'admin.questions.unverifyAll' | translate }}
+          </button>
+          }
+          @if (pendingQuestionsCount > 0) {
+          <button class="btn btn-delete-all" (click)="deleteAllPending()" [disabled]="isLoading()"
+            [title]="'admin.questions.deleteAllPendingTitle' | translate">
+            <i class="fas fa-trash-alt"></i>
+            {{ 'admin.questions.deleteAllPending' | translate }}
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Questions Table -->
+    <div class="table-card">
+      @if (filteredQuestions().length > 0) {
+      <div class="table-responsive">
+        <table class="questions-table">
+          <thead>
+            <tr class="table-header">
+              <th class="col-id">{{ 'admin.questions.id' | translate }}</th>
+              <th class="col-statement">{{ 'admin.questions.question' | translate }}</th>
+              <th class="col-category">{{ 'admin.questions.category' | translate }}</th>
+              <th class="col-difficulty">{{ 'admin.questions.difficulty' | translate }}</th>
+              <th class="col-status">{{ 'admin.questions.status' | translate }}</th>
+              <th class="col-active-status">{{ 'admin.questions.activeStatus' | translate }}</th>
+              <th class="col-ai">{{ 'admin.questions.ai' | translate }}</th>
+              <th class="col-actions">{{ 'admin.questions.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (question of filteredQuestions(); track question.id) {
+            <tr class="table-row" [ngClass]="{ 'pending-verify': !(question.admin_verified ?? false), 'inactive-question': question.is_active === 0 || question.is_active === false }">
+              <!-- ID -->
+              <td class="col-id">
+                <code>{{ question.id }}</code>
+              </td>
+
+              <!-- Statement -->
+              <td class="col-statement">
+                <span class="question-text" [title]="question.statement">
+                  {{ truncateText(question.statement, 60) }}
+                </span>
+              </td>
+
+              <!-- Category -->
+              <td class="col-category">
+                <span class="badge badge-primary">
+                  {{ getCategoryName(question.category_id) }}
+                </span>
+              </td>
+
+              <!-- Difficulty -->
+              <td class="col-difficulty">
+                <div class="difficulty-badge" [ngClass]="'difficulty-' + question.difficulty">
+                  {{ question.difficulty }}
+                </div>
+              </td>
+
+              <!-- Status (Verified/Pending) -->
+              <td class="col-status">
+                @if (question.admin_verified ?? false) {
+                <span class="status-badge status-verified">
+                  <i class="fas fa-check"></i>
+                  {{ 'admin.questions.verified' | translate }}
+                </span>
+                } @else {
+                <span class="status-badge status-pending">
+                  <i class="fas fa-clock"></i>
+                  {{ 'admin.questions.pending' | translate }}
+                </span>
+                }
+              </td>
+
+              <!-- Active Status (Active/Inactive) -->
+              <td class="col-active-status">
+                @if (question.is_active === 1 || question.is_active === true || question.is_active === undefined) {
+                <span class="status-badge status-active">
+                  <i class="fas fa-circle-check"></i>
+                  {{ 'admin.questions.active' | translate }}
+                </span>
+                } @else {
+                <span class="status-badge status-inactive">
+                  <i class="fas fa-circle-xmark"></i>
+                  {{ 'admin.questions.inactive' | translate }}
+                </span>
+                }
+              </td>
+
+              <!-- AI Generated -->
+              <td class="col-ai">
+                @if (question.is_ai_generated) {
+                <span class="ai-badge">
+                  <i class="fas fa-lightbulb"></i>
+                  {{ 'admin.questions.ai' | translate }}
+                </span>
+                } @else {
+                <span class="manual-badge">{{ 'admin.questions.manual' | translate }}</span>
+                }
+              </td>
+
+              <!-- Actions -->
+              <td class="col-actions">
+                <div class="action-buttons">
+                  <!-- Edit Full Question -->
+                  <button class="btn-action btn-edit" (click)="openFullEditModal(question.id)"
+                    [title]="'admin.questions.editFullQuestion' | translate">
+                    <i class="fas fa-pen-to-square"></i>
+                  </button>
+
+                  <!-- Verify/Unverify -->
+                  <button class="btn-action btn-verify"
+                    (click)="toggleVerifyQuestion(question.id, question.admin_verified ?? false)"
+                    [title]="question.admin_verified ? ('admin.questions.unverify' | translate) : ('admin.questions.verify' | translate)">
+                    @if (question.admin_verified ?? false) {
+                    <i class="fas fa-ban text-danger"></i>
+                    } @else {
+                    <i class="fas fa-certificate"></i>
+                    }
+                  </button>
+
+                  <!-- Restore (only for inactive questions) -->
+                  @if (question.is_active === 0 || question.is_active === false) {
+                  <button class="btn-action btn-restore" (click)="restoreQuestion(question.id)"
+                    [title]="'admin.questions.restore' | translate">
+                    <i class="fas fa-rotate-left"></i>
+                  </button>
+                  }
+
+                  <!-- Delete with Confirmation (only for active questions) -->
+                  @if (question.is_active !== 0 && question.is_active !== false) {
+                    @if (deleteConfirmId() !== question.id) {
+                    <button class="btn-action btn-delete" (click)="deleteQuestion(question.id)"
+                      [title]="'admin.questions.delete' | translate">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    } @else {
+                    <div class="confirm-buttons">
+                      <button class="btn-confirm confirm-yes" (click)="confirmDelete(question.id)"
+                        [title]="'admin.questions.confirmDeletion' | translate">
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="btn-confirm confirm-no" (click)="cancelDelete()"
+                        [title]="'admin.questions.cancel' | translate">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                    }
+                  }
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } @else {
+      <div class="no-data">
+        <i class="fas fa-file"></i>
+        <p>{{ 'admin.questions.noQuestionsAvailable' | translate }}</p>
+      </div>
+      }
+    </div>
+
+    <!-- Footer Info -->
+    <div class="questions-footer">
+      <p class="footer-text">
+        <i class="fas fa-circle-info"></i>
+        {{ 'admin.questions.totalQuestions' | translate }} {{ allQuestions().length }} {{
+        'admin.questions.questionsInDatabase' | translate }}
+      </p>
+    </div>
+  </div>
+  }
+</div>
+
+<!-- Question Edit Modal Component -->
+@if (isFullEditModalOpen()) {
+  <app-question-edit-modal
+    [questionId]="selectedQuestionId()"
+    [categories]="categories()"
+    (close)="closeFullEditModal()"
+    (saved)="onQuestionSaved()"
+  ></app-question-edit-modal>
+}

@@ -1,0 +1,125 @@
+<div class="game-start-container">
+  <!-- Background decoration -->
+  <div class="background-decoration"></div>
+
+  <!-- Main content -->
+  <div class="content-wrapper">
+    <div class="card game-card">
+      <!-- Header -->
+      <div class="card-header text-center">
+        <div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+          <i class="fas fa-brain fs-3x text-primary"></i>
+        </div>
+        <h1 class="game-title">{{ 'game.start.title' | translate }}</h1>
+        <p class="game-subtitle">{{ 'game.start.subtitle' | translate }}</p>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="playerForm" (ngSubmit)="onSubmit()" class="game-form">
+        <!-- Name Input -->
+        <div class="form-group">
+          <label for="name" class="form-label">{{ 'game.start.enterName' | translate }}</label>
+          <input type="text" id="name" class="form-control" formControlName="name"
+            [placeholder]="'game.start.namePlaceholder' | translate" maxlength="50"
+            [class.is-invalid]="playerForm.get('name')?.invalid && playerForm.get('name')?.touched" />
+          <div class="invalid-feedback" *ngIf="playerForm.get('name')?.invalid && playerForm.get('name')?.touched">
+            <small *ngIf="playerForm.get('name')?.hasError('required')">{{ 'game.start.errors.nameRequired' | translate
+              }}</small>
+            <small *ngIf="playerForm.get('name')?.hasError('minlength')">{{ 'game.start.errors.nameMinLength' |
+              translate }}</small>
+            <small *ngIf="playerForm.get('name')?.hasError('maxlength')">{{ 'game.start.errors.nameMaxLength' |
+              translate }}</small>
+          </div>
+        </div>
+
+        <!-- Age Input -->
+        <div class="form-group">
+          <label for="age" class="form-label">{{ 'game.start.enterAge' | translate }}</label>
+          <input type="text" id="age" class="form-control" formControlName="age" (input)="onAgeInput($event)"
+            [placeholder]="'game.start.agePlaceholder' | translate" maxlength="3"
+            [class.is-invalid]="playerForm.get('age')?.invalid && playerForm.get('age')?.touched" />
+          <div class="invalid-feedback" *ngIf="playerForm.get('age')?.invalid && playerForm.get('age')?.touched">
+            <small *ngIf="playerForm.get('age')?.hasError('required')">{{ 'game.start.errors.ageRequired' | translate
+              }}</small>
+            <small *ngIf="playerForm.get('age')?.hasError('invalidFormat')">{{ 'game.start.errors.ageInvalidFormat' |
+              translate }}</small>
+            <small *ngIf="playerForm.get('age')?.hasError('outOfRange')">{{ 'game.start.errors.ageOutOfRange' |
+              translate }}</small>
+          </div>
+        </div>
+
+        <!-- Room Code Toggle -->
+        <div class="room-code-section">
+          <button type="button" class="room-code-toggle" (click)="toggleRoomCode()" [disabled]="isLoading()">
+            <i class="fas" [ngClass]="showRoomCode() ? 'fa-chevron-up' : 'fa-door-open'"></i>
+            {{ showRoomCode() ? ('game.start.hideRoomCode' | translate) : ('game.start.hasRoomCode' | translate) }}
+          </button>
+
+          <!-- Room Code Input (collapsed by default) -->
+          <div class="room-code-input-wrapper" *ngIf="showRoomCode()">
+            <label for="roomCode" class="form-label">{{ 'game.start.roomCodeLabel' | translate }}</label>
+            <div class="room-code-input-group">
+              <input type="text" id="roomCode" class="form-control room-code-input" formControlName="roomCode"
+                (input)="onRoomCodeInput($event)" [placeholder]="'game.start.roomCodePlaceholder' | translate"
+                maxlength="6" [class.is-valid]="roomValidated()" [class.is-invalid]="roomError()" />
+              <button type="button" class="btn btn-outline-primary btn-validate" (click)="validateRoomCode()"
+                [disabled]="isValidatingRoom() || isLoading() || roomValidated()">
+                <span *ngIf="isValidatingRoom()" class="spinner-small"></span>
+                <span *ngIf="!isValidatingRoom() && !roomValidated()">{{ 'game.start.validate' | translate }}</span>
+                <span *ngIf="roomValidated()"><i class="fas fa-check"></i></span>
+              </button>
+            </div>
+
+            <!-- Room validation feedback -->
+            <div class="room-feedback">
+              <div *ngIf="roomError()" class="room-error">
+                <i class="fas fa-exclamation-circle"></i> {{ roomError() }}
+              </div>
+              <div *ngIf="roomValidated() && validatedRoom()" class="room-success">
+                <i class="fas fa-check-circle"></i>
+                {{ 'game.start.roomLabel' | translate }}: <strong>{{ validatedRoom()?.name }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-play" [disabled]="isLoading()">
+          <span *ngIf="!isLoading()" class="btn-text d-flex align-items-center justify-content-center gap-2">
+            <i class="fas fa-gamepad text-white"></i>
+            {{ 'game.start.startButton' | translate }}
+          </span>
+          <span *ngIf="isLoading()" class="btn-text">
+            <span class="spinner"></span> {{ 'game.start.loading' | translate }}
+          </span>
+        </button>
+      </form>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <p class="footer-text">
+          {{ 'game.start.isAdmin' | translate }}
+          <button type="button" class="link-button" (click)="goToAdmin()" [disabled]="isLoading()">
+            {{ 'game.start.adminLink' | translate }}
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <!-- Features section -->
+    <div class="features-section">
+      <div class="feature-item">
+        <i class="fas fa-bolt fs-2x text-warning"></i>
+        <p class="feature-text">{{ 'game.start.features.dynamic' | translate }}</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-arrow-up fs-2x text-info"></i>
+        <p class="feature-text">{{ 'game.start.features.adaptive' | translate }}</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-trophy fs-4x text-success"></i>
+        <p class="feature-text">{{ 'game.start.features.compete' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</div>

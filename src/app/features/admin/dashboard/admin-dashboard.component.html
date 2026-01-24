@@ -1,0 +1,376 @@
+<div class="admin-container">
+  <!-- Header with Logout -->
+  <div class="admin-header">
+    <div class="admin-header-content">
+      <div class="admin-header-title">
+        <i class="fas fa-shield"></i>
+        <div class="admin-header-text">
+          <h1>{{ 'admin.dashboard.title' | translate }}</h1>
+          <p class="header-subtitle">{{ 'admin.dashboard.subtitle' | translate }}</p>
+        </div>
+      </div>
+      <div class="admin-header-actions">
+        <app-language-selector></app-language-selector>
+        <button class="btn btn-logout" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          {{ 'auth.logout' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p class="loading-text">{{ 'admin.common.loadingStats' | translate }}</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+  <div class="error-container">
+    <div class="alert alert-danger">
+      <i class="fas fa-circle-info"></i>
+      <div>
+        <strong>{{ 'common.error' | translate }}</strong>
+        <p>{{ errorMessage() }}</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Dashboard Content -->
+  @if (!isLoading() && !errorMessage()) {
+  <div class="dashboard-content">
+    <!-- KPI Cards Section -->
+    <section class="kpi-section">
+      <h2 class="section-title">{{ 'admin.dashboard.mainStats' | translate }}</h2>
+
+      <div class="kpi-grid">
+        <!-- Total Jugadores -->
+        <div class="kpi-card kpi-players">
+          <div class="kpi-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="kpi-content">
+            <p class="kpi-label">{{ 'admin.dashboard.registeredPlayers' | translate }}</p>
+            <p class="kpi-value">{{ totalPlayers() }}</p>
+            <p class="kpi-trend">{{ 'admin.dashboard.totalAccumulated' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Total Sesiones -->
+        <div class="kpi-card kpi-sessions">
+          <div class="kpi-icon">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <div class="kpi-content">
+            <p class="kpi-label">{{ 'admin.dashboard.gameSessions' | translate }}</p>
+            <p class="kpi-value">{{ totalSessions() }}</p>
+            <p class="kpi-trend">{{ 'admin.dashboard.completedGames' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Total Preguntas -->
+        <div class="kpi-card kpi-questions">
+          <div class="kpi-icon">
+            <i class="fas fa-file"></i>
+          </div>
+          <div class="kpi-content">
+            <p class="kpi-label">{{ 'admin.dashboard.questionsInDb' | translate }}</p>
+            <p class="kpi-value">{{ totalQuestions() }}</p>
+            <p class="kpi-trend">{{ 'admin.dashboard.includingAi' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Verificación Pendiente -->
+        <div class="kpi-card kpi-pending">
+          <div class="kpi-icon">
+            <i class="fas fa-check"></i>
+          </div>
+          <div class="kpi-content">
+            <p class="kpi-label">{{ 'admin.dashboard.pendingVerification' | translate }}</p>
+            <p class="kpi-value">{{ pendingVerification() }}</p>
+            <p class="kpi-trend">{{ 'admin.dashboard.requiresReview' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="quick-actions-section">
+      <h2 class="section-title">{{ 'admin.dashboard.quickActions' | translate }}</h2>
+
+      <div class="actions-grid">
+        <!-- Manage Questions -->
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-pen"></i>
+          </div>
+          <div class="action-content">
+            <h3 class="action-title">{{ 'admin.dashboard.questionManagement' | translate }}</h3>
+            <p class="action-description">
+              {{ 'admin.dashboard.questionManagementDesc' | translate }}
+            </p>
+            <button class="btn btn-action" (click)="goToQuestions()">
+              <i class="fas fa-arrow-right"></i>
+              {{ 'admin.dashboard.goToQuestions' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- System Settings -->
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-gear"></i>
+          </div>
+          <div class="action-content">
+            <h3 class="action-title">{{ 'admin.dashboard.systemSettings' | translate }}</h3>
+            <p class="action-description">
+              {{ 'admin.dashboard.systemSettingsDesc' | translate }}
+            </p>
+            <button class="btn btn-action" (click)="goToSettings()">
+              <i class="fas fa-arrow-right"></i>
+              {{ 'admin.dashboard.goToSettings' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Players Management -->
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="action-content">
+            <h3 class="action-title">{{ 'admin.dashboard.playerManagement' | translate }}</h3>
+            <p class="action-description">
+              {{ 'admin.dashboard.playerManagementDesc' | translate }}
+            </p>
+            <button class="btn btn-action" (click)="goToPlayers()">
+              <i class="fas fa-arrow-right"></i>
+              {{ 'admin.dashboard.goToPlayers' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Rooms Management -->
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-door-open"></i>
+          </div>
+          <div class="action-content">
+            <h3 class="action-title">{{ 'admin.dashboard.roomManagement' | translate }}</h3>
+            <p class="action-description">
+              {{ 'admin.dashboard.roomManagementDesc' | translate }}
+            </p>
+            <button class="btn btn-action" (click)="goToRooms()">
+              <i class="fas fa-arrow-right"></i>
+              {{ 'admin.dashboard.goToRooms' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Management -->
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-users-cog"></i>
+          </div>
+          <div class="action-content">
+            <h3 class="action-title">{{ 'admin.dashboard.adminManagement' | translate }}</h3>
+            <p class="action-description">
+              {{ 'admin.dashboard.adminManagementDesc' | translate }}
+            </p>
+            <button class="btn btn-action" (click)="goToAdmins()">
+              <i class="fas fa-arrow-right"></i>
+              {{ 'admin.dashboard.goToAdmins' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics Section: Top Hardest Questions -->
+    <section class="analytics-section">
+      <h2 class="section-title">{{ 'admin.dashboard.questionAnalysis' | translate }}</h2>
+
+      <div class="analytics-grid">
+        <!-- Top Hardest -->
+        <div class="analytics-card">
+          <div class="analytics-header">
+            <h3 class="analytics-title">
+              <i class="fas fa-arrow-down"></i>
+              {{ 'admin.dashboard.topHardest' | translate }}
+            </h3>
+            <p class="analytics-subtitle">{{ 'admin.dashboard.lowestSuccessRate' | translate }}</p>
+          </div>
+
+          <div class="analytics-content">
+            @let hardestQuestions = topHardest();
+            @if (topHardest()!.length > 0) {
+            <div class="questions-list">
+              @for (question of hardestQuestions; track question.id; let idx = $index) {
+              <div class="question-item">
+                <div class="question-rank">{{ idx + 1 }}</div>
+                <div class="question-info">
+                  <p class="question-text">{{ truncateText(question.statement, 60) }}</p>
+                  <p class="question-meta">
+                    <i class="fas fa-circle-info"></i>
+                    {{ 'admin.common.id' | translate }}: {{ question.id }}
+                  </p>
+                </div>
+                <div class="question-rate" [ngClass]="getSuccessRateClass(question.success_rate)">
+                  <p class="rate-value">{{ question.success_rate.toFixed(1) }}%</p>
+                  <p class="rate-label">{{ 'admin.dashboard.successRate' | translate }}</p>
+                </div>
+              </div>
+              }
+            </div>
+            } @else {
+            <p class="no-data">{{ 'admin.common.noData' | translate }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- Top Easiest -->
+        <div class="analytics-card">
+          <div class="analytics-header">
+            <h3 class="analytics-title">
+              <i class="fas fa-arrow-up"></i>
+              {{ 'admin.dashboard.topEasiest' | translate }}
+            </h3>
+            <p class="analytics-subtitle">{{ 'admin.dashboard.highestSuccessRate' | translate }}</p>
+          </div>
+
+          <div class="analytics-content">
+            @if (topEasiest()!.length > 0) {
+            <div class="questions-list">
+              @for (question of topEasiest(); track question.id; let idx = $index) {
+              <div class="question-item">
+                <div class="question-rank">{{ idx + 1 }}</div>
+                <div class="question-info">
+                  <p class="question-text">{{ truncateText(question.statement, 60) }}</p>
+                  <p class="question-meta">
+                    <i class="fas fa-circle-info"></i>
+                    {{ 'admin.common.id' | translate }}: {{ question.id }}
+                  </p>
+                </div>
+                <div class="question-rate" [ngClass]="getSuccessRateClass(question.success_rate)">
+                  <p class="rate-value">{{ question.success_rate.toFixed(1) }}%</p>
+                  <p class="rate-label">{{ 'admin.dashboard.successRate' | translate }}</p>
+                </div>
+              </div>
+              }
+            </div>
+            } @else {
+            <p class="no-data">{{ 'admin.common.noData' | translate }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Batch Statistics Section -->
+    <section class="batch-section">
+      <div class="section-header">
+        <h2 class="section-title">{{ 'admin.dashboard.batchStats' | translate }}</h2>
+        <button class="btn btn-sm btn-refresh" (click)="loadBatchStatistics()" [disabled]="isLoadingBatches()">
+          <i class="fas fa-sync-alt" [class.fa-spin]="isLoadingBatches()"></i>
+          {{ 'admin.common.reload' | translate }}
+        </button>
+      </div>
+
+      @if (isLoadingBatches()) {
+      <div class="loading-small">
+        <span class="spinner-small"></span>
+        <span>{{ 'admin.common.loading' | translate }}</span>
+      </div>
+      }
+
+      @if (!isLoadingBatches() && batchStatistics().length > 0) {
+      <div class="batch-table-container">
+        <table class="batch-table">
+          <thead>
+            <tr>
+              <th>{{ 'admin.dashboard.batchName' | translate }}</th>
+              <th>{{ 'admin.common.type' | translate }}</th>
+              <th>{{ 'admin.dashboard.aiProvider' | translate }}</th>
+              <th>{{ 'admin.common.total' | translate }}</th>
+              <th>{{ 'admin.dashboard.verified' | translate }}</th>
+              <th>{{ 'admin.common.progress' | translate }}</th>
+              <th>{{ 'admin.dashboard.status' | translate }}</th>
+              <th>{{ 'admin.common.date' | translate }}</th>
+              <th>{{ 'common.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (batch of batchStatistics(); track batch.id) {
+            <tr>
+              <td class="batch-name">{{ batch.batch_name }}</td>
+              <td>
+                <span class="batch-type" [ngClass]="'type-' + batch.batch_type">
+                  {{ 'admin.batches.types.' + batch.batch_type | translate }}
+                </span>
+              </td>
+              <td>
+                @if (batch.ai_provider_used) {
+                <span class="ai-provider-badge" [ngClass]="getAIProviderClass(batch.ai_provider_used)">
+                  <i class="fas fa-microchip"></i>
+                  {{ getAIProviderText(batch.ai_provider_used) }}
+                </span>
+                } @else {
+                <span class="ai-provider-badge ai-provider-none">N/A</span>
+                }
+              </td>
+              <td class="text-center">{{ batch.total_questions }}</td>
+              <td class="text-center">{{ batch.verified_count }}</td>
+              <td>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" [style.width.%]="Number(batch.verification_percent) || 0" [ngClass]="{
+                            'progress-complete': (Number(batch.verification_percent) || 0) >= 100,
+                            'progress-partial': (Number(batch.verification_percent) || 0) >= 50 && (Number(batch.verification_percent) || 0) < 100,
+                            'progress-low': (Number(batch.verification_percent) || 0) < 50
+                          }">
+                  </div>
+                  <span class="progress-text">{{ (Number(batch.verification_percent) || 0).toFixed(0) }}%</span>
+                </div>
+              </td>
+              <td>
+                <span class="batch-status" [ngClass]="getBatchStatusClass(batch.status)">
+                  {{ getBatchStatusText(batch.status) }}
+                </span>
+              </td>
+              <td class="batch-date">{{ formatDate(batch.imported_at) }}</td>
+              <td>
+                <button class="btn-action btn-view" (click)="goToQuestionsWithBatch(batch.id)"
+                  [title]="'admin.dashboard.viewBatchQuestions' | translate">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+
+      @if (!isLoadingBatches() && batchStatistics().length === 0) {
+      <div class="no-batches">
+        <i class="fas fa-box-open"></i>
+        <p>{{ 'admin.dashboard.noBatches' | translate }}</p>
+        <span>{{ 'admin.dashboard.noBatchesDesc' | translate }}</span>
+      </div>
+      }
+    </section>
+
+    <!-- Footer Info -->
+    <div class="dashboard-footer">
+      <p class="footer-text">
+        <i class="fas fa-circle-info"></i>
+        {{ 'admin.dashboard.statsUpdatedRealtime' | translate }} | {{ 'admin.dashboard.lastLoad' | translate }}: {{
+        (isLoading() ? ('admin.common.loading' | translate) : ('admin.dashboard.updated' | translate)) }}
+      </p>
+    </div>
+  </div>
+  }
+</div>

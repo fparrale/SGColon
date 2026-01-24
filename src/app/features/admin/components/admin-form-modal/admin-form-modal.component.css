@@ -1,0 +1,45 @@
+/* ========== ADMIN FORM MODAL SPECIFIC STYLES ========== */
+
+/* Input Wrapper with Icon */
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.modal-body .input-wrapper .form-control {
+    padding-left: 2.5rem;
+}
+
+/* Info Box */
+.info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #2196f3;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.info-box i {
+    color: #2196f3;
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.info-box ul {
+    margin: 0.5rem 0 0 1rem;
+    padding: 0;
+}
+
+.info-box li {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}

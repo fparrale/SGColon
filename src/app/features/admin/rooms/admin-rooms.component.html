@@ -1,0 +1,408 @@
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="admin-header-content">
+      <div class="admin-header-title">
+        <i class="fas fa-door-open"></i>
+        <div class="admin-header-text">
+          <h1>{{ 'admin.rooms.title' | translate }}</h1>
+          <p class="admin-header-subtitle">{{ 'admin.rooms.subtitle' | translate }}</p>
+        </div>
+      </div>
+      <div class="admin-header-actions">
+        <button class="admin-btn-back" (click)="goToDashboard()">
+          <i class="fas fa-arrow-left"></i>
+          {{ 'admin.common.backToDashboard' | translate }}
+        </button>
+        <button class="admin-btn-logout admin-btn-danger" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          {{ 'auth.logout' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Tabs -->
+  <app-tabs [tabs]="tabs" [activeTab]="activeTab()" (tabChange)="onTabChange($event)"></app-tabs>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+
+    <!-- TAB 1: ROOMS LIST -->
+    <div *ngIf="activeTab() === 'rooms'" class="rooms-list-tab">
+      <!-- Actions Bar -->
+      <div class="actions-bar">
+        <div class="search-filters">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" [placeholder]="'admin.rooms.searchByNameOrCode' | translate"
+              [value]="searchQuery()" (input)="onSearchChange($event)" />
+          </div>
+          <select class="filter-select" (change)="onStatusFilterChange($event)">
+            <option value="all">{{ 'admin.common.allStatuses' | translate }}</option>
+            <option value="active">{{ 'admin.rooms.status.active' | translate }}</option>
+            <option value="paused">{{ 'admin.rooms.status.paused' | translate }}</option>
+            <option value="closed">{{ 'admin.rooms.status.closed' | translate }}</option>
+          </select>
+        </div>
+        <button class="admin-btn admin-btn-primary" (click)="openCreateModal()">
+          <i class="fas fa-plus"></i>
+          {{ 'admin.rooms.newRoom' | translate }}
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="isLoadingRooms()" class="loading-container">
+        <div class="spinner"></div>
+        <p>{{ 'admin.rooms.loadingRooms' | translate }}</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoadingRooms() && filteredRooms().length === 0" class="empty-state">
+        <i class="fas fa-door-open"></i>
+        <h3>{{ 'admin.rooms.noRooms' | translate }}</h3>
+        <p>{{ 'admin.rooms.noRoomsDesc' | translate }}</p>
+        <button class="admin-btn admin-btn-primary" (click)="openCreateModal()">
+          <i class="fas fa-plus"></i>
+          {{ 'admin.rooms.createFirstRoom' | translate }}
+        </button>
+      </div>
+
+      <!-- Rooms Grid -->
+      <div *ngIf="!isLoadingRooms() && filteredRooms().length > 0" class="rooms-grid">
+        <div *ngFor="let room of filteredRooms()" class="room-card">
+          <div class="room-header">
+            <div class="room-code-badge" (click)="copyRoomCode(room.room_code)"
+              [title]="'admin.common.clickToCopy' | translate">
+              <i class="fas fa-key"></i>
+              {{ room.room_code }}
+              <i class="fas fa-copy copy-icon"></i>
+            </div>
+            <span class="status-badge" [ngClass]="getStatusClass(room.status)">
+              {{ getStatusLabel(room.status) | translate }}
+            </span>
+          </div>
+
+          <div class="room-body">
+            <h3 class="room-name">{{ room.name }}</h3>
+            <p *ngIf="room.description" class="room-description">{{ room.description }}</p>
+
+            <div class="room-meta">
+              <div class="meta-item">
+                <i class="fas fa-users"></i>
+                <span>{{ 'admin.common.max' | translate }}: {{ room.max_players }} {{ 'admin.common.players' | translate
+                  }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-language"></i>
+                <span>{{ room.language === 'es' ? ('common.spanish' | translate) : ('common.english' | translate)
+                  }}</span>
+              </div>
+              <div class="meta-item" *ngIf="room.filter_categories?.length">
+                <i class="fas fa-tags"></i>
+                <span>{{ room.filter_categories?.length }} {{ 'admin.common.categories' | translate }}</span>
+              </div>
+              <div class="meta-item" *ngIf="room.filter_difficulties?.length">
+                <i class="fas fa-signal"></i>
+                <span>{{ room.filter_difficulties?.length }} {{ 'admin.common.levels' | translate }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="room-actions">
+            <button class="btn-icon btn-view" (click)="viewRoomDetail(room)"
+              [title]="'admin.rooms.roomDetails' | translate">
+              <i class="fas fa-chart-bar"></i>
+            </button>
+            <button class="btn-icon btn-edit" (click)="openEditModal(room)" [title]="'common.edit' | translate">
+              <i class="fas fa-edit"></i>
+            </button>
+
+            <!-- Status Actions -->
+            <div class="status-actions">
+              <button *ngIf="room.status !== 'active'" class="btn-icon btn-activate"
+                (click)="updateRoomStatus(room, 'active')" [title]="'admin.rooms.activate' | translate">
+                <i class="fas fa-play"></i>
+              </button>
+              <button *ngIf="room.status === 'active'" class="btn-icon btn-pause"
+                (click)="updateRoomStatus(room, 'paused')" [title]="'admin.rooms.pause' | translate">
+                <i class="fas fa-pause"></i>
+              </button>
+              <button *ngIf="room.status !== 'closed'" class="btn-icon btn-close"
+                (click)="updateRoomStatus(room, 'closed')" [title]="'admin.rooms.closeRoom' | translate">
+                <i class="fas fa-stop"></i>
+              </button>
+            </div>
+
+            <!-- Delete with Confirmation -->
+            @if (deleteRoomConfirmId() !== room.id) {
+            <button class="btn-icon btn-delete" (click)="deleteRoom(room)" [title]="'common.delete' | translate">
+              <i class="fas fa-trash"></i>
+            </button>
+            } @else {
+            <div class="confirm-buttons">
+              <button class="btn-confirm confirm-yes" (click)="confirmDeleteRoom(room.id)"
+                [title]="'admin.rooms.confirmDeletion' | translate">
+                <i class="fas fa-check"></i>
+              </button>
+              <button class="btn-confirm confirm-no" (click)="cancelDeleteRoom()"
+                [title]="'admin.rooms.cancel' | translate">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ROOM DETAIL -->
+    <div *ngIf="activeTab() === 'detail'" class="room-detail-tab">
+      <!-- No Room Selected -->
+      <div *ngIf="!selectedRoomId()" class="empty-state">
+        <i class="fas fa-chart-bar"></i>
+        <h3>{{ 'admin.rooms.selectRoom' | translate }}</h3>
+        <p>{{ 'admin.rooms.selectRoomDesc' | translate }}</p>
+        <button class="btn-secondary" (click)="onTabChange('rooms')">
+          <i class="fas fa-list"></i>
+          {{ 'admin.rooms.goToList' | translate }}
+        </button>
+      </div>
+
+      <!-- Room Detail Content -->
+      <div *ngIf="selectedRoomId()" class="detail-content">
+        <!-- Back Button -->
+        <button class="btn-back-detail" (click)="clearRoomSelection()">
+          <i class="fas fa-arrow-left"></i>
+          {{ 'admin.rooms.goToList' | translate }}
+        </button>
+
+        <!-- Loading -->
+        <div *ngIf="isLoadingDetail()" class="loading-container">
+          <div class="spinner"></div>
+          <p>{{ 'admin.rooms.loadingRooms' | translate }}</p>
+        </div>
+
+        <!-- Room Info Card -->
+        <div *ngIf="!isLoadingDetail() && selectedRoom()" class="room-info-card">
+          <div class="info-header">
+            <div class="info-title">
+              <h2>{{ selectedRoom()?.name }}</h2>
+              <div class="room-code-large" (click)="copyRoomCode(selectedRoom()!.room_code)">
+                <i class="fas fa-key"></i>
+                {{ selectedRoom()?.room_code }}
+                <i class="fas fa-copy"></i>
+              </div>
+            </div>
+            <span class="status-badge large" [ngClass]="getStatusClass(selectedRoom()!.status)">
+              {{ getStatusLabel(selectedRoom()!.status) | translate }}
+            </span>
+          </div>
+
+          <p *ngIf="selectedRoom()?.description" class="info-description">
+            {{ selectedRoom()?.description }}
+          </p>
+
+          <!-- Export Buttons -->
+          <div class="export-buttons">
+            <button class="btn-export btn-pdf" (click)="exportToPdf()" [disabled]="isExporting()">
+              <i class="fas fa-file-pdf"></i>
+              {{ 'admin.rooms.exportPdf' | translate }}
+            </button>
+            <button class="btn-export btn-excel" (click)="exportToExcel()" [disabled]="isExporting()">
+              <i class="fas fa-file-excel"></i>
+              {{ 'admin.rooms.exportExcel' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div *ngIf="roomStats()" class="stats-overview">
+          <div class="stat-card">
+            <i class="fas fa-users"></i>
+            <div class="stat-value">{{ roomStats()?.unique_players || 0 }}</div>
+            <div class="stat-label">{{ 'admin.rooms.totalPlayers' | translate }}</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-gamepad"></i>
+            <div class="stat-value">{{ roomStats()?.total_sessions || 0 }}</div>
+            <div class="stat-label">{{ 'admin.rooms.totalSessions' | translate }}</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-question-circle"></i>
+            <div class="stat-value">{{ roomStats()?.total_answers || 0 }}</div>
+            <div class="stat-label">{{ 'admin.rooms.totalAnswers' | translate }}</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-percentage"></i>
+            <div class="stat-value">{{ roomStats()?.avg_accuracy || 0 }}%</div>
+            <div class="stat-label">{{ 'admin.rooms.avgAccuracy' | translate }}</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-trophy"></i>
+            <div class="stat-value">{{ roomStats()?.highest_score || 0 }}</div>
+            <div class="stat-label">{{ 'admin.rooms.highestScore' | translate }}</div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+          <!-- Player Performance Chart -->
+          <div class="chart-card" *ngIf="playerStatsChartData()">
+            <h3><i class="fas fa-chart-bar"></i> {{ 'admin.rooms.playerStats' | translate }}</h3>
+            <div class="chart-container">
+              <canvas baseChart [data]="playerStatsChartData()!" [options]="playerStatsChartOptions"
+                [type]="playerStatsChartType"></canvas>
+            </div>
+          </div>
+
+          <!-- Category Distribution Chart -->
+          <div class="chart-card" *ngIf="categoryStatsChartData()">
+            <h3><i class="fas fa-chart-pie"></i> {{ 'admin.rooms.categoryStats' | translate }}</h3>
+            <div class="chart-container doughnut">
+              <canvas baseChart [data]="categoryStatsChartData()!" [options]="categoryStatsChartOptions"
+                [type]="categoryStatsChartType"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Analysis Section -->
+        <div class="analytics-section" *ngIf="topHardest().length > 0 || topEasiest().length > 0">
+          <h3 class="section-subtitle"><i class="fas fa-chart-line"></i> {{ 'admin.rooms.questionAnalysis' | translate
+            }}</h3>
+
+          <div class="analytics-grid">
+            <!-- Top Hardest Questions -->
+            <div class="analytics-card" *ngIf="topHardest().length > 0">
+              <div class="analytics-header">
+                <h4 class="analytics-title">
+                  <i class="fas fa-arrow-down"></i>
+                  {{ 'admin.rooms.highErrorQuestions' | translate }}
+                </h4>
+                <p class="analytics-subtitle">{{ 'admin.rooms.lowestSuccessRate' | translate }}</p>
+              </div>
+
+              <div class="analytics-content">
+                <div class="questions-list">
+                  <div class="question-item" *ngFor="let question of topHardest(); let idx = index">
+                    <div class="question-rank">{{ idx + 1 }}</div>
+                    <div class="question-info">
+                      <p class="question-text">{{ question.statement }}</p>
+                      <p class="question-meta">
+                        <i class="fas fa-circle-info"></i>
+                        ID: {{ question.id }} | {{ question.times_answered }} {{ 'admin.rooms.answers' | translate }}
+                      </p>
+                    </div>
+                    <div class="question-rate" [ngClass]="getSuccessRateClass(+question.success_rate)">
+                      <p class="rate-value">{{ (+question.success_rate).toFixed(1) }}%</p>
+                      <p class="rate-label">{{ 'admin.rooms.success' | translate }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Easiest Questions -->
+            <div class="analytics-card" *ngIf="topEasiest().length > 0">
+              <div class="analytics-header">
+                <h4 class="analytics-title">
+                  <i class="fas fa-arrow-up"></i>
+                  {{ 'admin.rooms.easyQuestions' | translate }}
+                </h4>
+                <p class="analytics-subtitle">{{ 'admin.rooms.highestSuccessRate' | translate }}</p>
+              </div>
+
+              <div class="analytics-content">
+                <div class="questions-list">
+                  <div class="question-item" *ngFor="let question of topEasiest(); let idx = index">
+                    <div class="question-rank">{{ idx + 1 }}</div>
+                    <div class="question-info">
+                      <p class="question-text">{{ question.statement }}</p>
+                      <p class="question-meta">
+                        <i class="fas fa-circle-info"></i>
+                        ID: {{ question.id }} | {{ question.times_answered }} {{ 'admin.rooms.answers' | translate }}
+                      </p>
+                    </div>
+                    <div class="question-rate" [ngClass]="getSuccessRateClass(+question.success_rate)">
+                      <p class="rate-value">{{ (+question.success_rate).toFixed(1) }}%</p>
+                      <p class="rate-label">{{ 'admin.rooms.success' | translate }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player Stats Table -->
+        <div class="data-section" *ngIf="roomPlayerStats().length > 0">
+          <h3><i class="fas fa-users"></i> {{ 'admin.rooms.playerStats' | translate }}</h3>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>{{ 'admin.rooms.player' | translate }}</th>
+                  <th>{{ 'admin.rooms.sessions' | translate }}</th>
+                  <th>{{ 'admin.rooms.answers' | translate }}</th>
+                  <th>{{ 'admin.rooms.accuracy' | translate }}</th>
+                  <th>{{ 'admin.rooms.avgScore' | translate }}</th>
+                  <th>{{ 'admin.rooms.maxScore' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let player of roomPlayerStats()">
+                  <td>{{ player.player_name }}</td>
+                  <td>{{ player.total_sessions }}</td>
+                  <td>{{ player.total_answers }}</td>
+                  <td>
+                    <span class="accuracy-badge" [class.high]="player.accuracy >= 70"
+                      [class.medium]="player.accuracy >= 50 && player.accuracy < 70" [class.low]="player.accuracy < 50">
+                      {{ player.accuracy }}%
+                    </span>
+                  </td>
+                  <td>{{ player.avg_score }}</td>
+                  <td>{{ player.high_score }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Question Stats Table -->
+        <div class="data-section" *ngIf="roomQuestionStats().length > 0">
+          <h3><i class="fas fa-question-circle"></i> {{ 'admin.rooms.highErrorQuestions' | translate }}</h3>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>{{ 'admin.rooms.question' | translate }}</th>
+                  <th>{{ 'admin.rooms.timesAnswered' | translate }}</th>
+                  <th>{{ 'admin.rooms.errorRate' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let q of roomQuestionStats().slice(0, 10)">
+                  <td class="question-text">{{ q.statement }}</td>
+                  <td>{{ q.times_answered }}</td>
+                  <td>
+                    <span class="error-badge" [class.high]="q.error_rate >= 50"
+                      [class.medium]="q.error_rate >= 30 && q.error_rate < 50" [class.low]="q.error_rate < 30">
+                      {{ q.error_rate }}%
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CREATE/EDIT MODAL -->
+  <app-room-form-modal *ngIf="showModal()" [roomToEdit]="roomToEdit()" [categories]="categories()"
+    [difficulties]="difficulties" (save)="onSaveRoom($event)" (cancel)="closeModal()">
+  </app-room-form-modal>
+</div>
