@@ -264,7 +264,8 @@
       "lastLoad": "Última carga",
       "updated": "Actualizado",
       "complete": "Completo",
-      "partial": "Parcial"
+      "partial": "Parcial",
+      "unauthorized": "No autorizado. Por favor, inicia sesión nuevamente."
     },
     "rooms": {
       "title": "Gestión de Salas",

@@ -264,7 +264,8 @@
       "lastLoad": "Last load",
       "updated": "Updated",
       "complete": "Complete",
-      "partial": "Partial"
+      "partial": "Partial",
+      "unauthorized": "Unauthorized. Please log in again."
     },
     "rooms": {
       "title": "Room Management",
