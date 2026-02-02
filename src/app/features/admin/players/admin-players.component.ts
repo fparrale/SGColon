@@ -12,11 +12,12 @@ import { PlayerService } from '../../../core/services/player.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NOTIFICATION_DURATION } from '../../../core/constants/notification-config.const';
+import { registerCharts } from '../shared/chart-register.helper';
 
 import { LeaderboardEntry } from '../../../core/models/game/leaderboard.interface';
 import { Player } from '../../../core/models/player/player.interface';
 import { PlayerStatsResponse, PlayerTopicStats, PlayerStreaksResponse, PlayerSession, PlayerSessionsResponse } from '../../../core/models/player/player-stats.interface';
-import { SessionAnswersResponse, SessionAnswer } from '../../../core/models/game/session-stats.interface';
+import { SessionAnswersResponse } from '../../../core/models/game/session-stats.interface';
 
 @Component({
   selector: 'app-admin-players',
@@ -114,7 +115,10 @@ export class AdminPlayersComponent implements OnInit {
     private translate: TranslateService,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {
+    // Register Chart.js components lazily
+    registerCharts();
+  }
 
   ngOnInit(): void {
     // Read tab from query params

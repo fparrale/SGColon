@@ -11,7 +11,5 @@ import { LanguageService } from './core/services/language.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'sg-ia-frontend';
-
   constructor(private languageService: LanguageService) { }
 }

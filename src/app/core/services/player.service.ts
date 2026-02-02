@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Player, PlayerResponse, PlayersListResponse, PlayerStatsResponse, PlayerStreaksResponse, SessionStreaksResponse, PlayerSessionsResponse } from '../models/player';
+import { PlayerResponse, PlayersListResponse, PlayerStatsResponse, PlayerStreaksResponse, SessionStreaksResponse, PlayerSessionsResponse } from '../models/player';
 import { SessionAnswersResponse } from '../models/game/session-stats.interface';
 
 /**

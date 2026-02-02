@@ -27,14 +27,6 @@
   font-size: 16px;
 }
 
-/* header-subtitle override for dashboard */
-.header-subtitle {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
-}
-
 /*============================================================================
   LOADING STATE - Component-specific (base in admin-styles.css)
 ============================================================================ */
@@ -492,8 +484,6 @@ button.btn-action i {
   font-size: 14px;
 }
 
-/* Utility classes (.text-*, .fs-*) are now in admin-styles.css */
-
 /*============================================================================
   RESPONSIVE DESIGN
 ============================================================================ */
@@ -517,19 +507,6 @@ button.btn-action i {
 }
 
 @media (max-width: 768px) {
-  .admin-header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .admin-header-title h1 {
-    font-size: 24px;
-  }
-
-  .admin-header-actions {
-    width: 100%;
-  }
-
   .btn-logout {
     width: 100%;
     justify-content: center;
@@ -573,13 +550,6 @@ button.btn-action i {
 }
 
 @media (max-width: 480px) {
-  .admin-header-title h1 {
-    font-size: 20px;
-  }
-
-  .admin-header-title {
-    gap: 12px;
-  }
 
   .section-title {
     font-size: 16px;

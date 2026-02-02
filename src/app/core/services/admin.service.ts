@@ -5,7 +5,6 @@ import { environment } from '../../../environments/environment';
 import {
   PromptConfigResponse,
   UpdatePromptConfigResponse,
-  CategoryResponse,
   CreateCategoryResponse,
   UpdateCategoryResponse,
   DeleteCategoryResponse,
@@ -13,7 +12,6 @@ import {
   GenerateBatchResponse,
   GetQuestionsResponse,
   GetCategoriesResponse,
-  AdminCategory,
   BatchStatisticsResponse,
   UnverifiedQuestionsResponse,
   BatchVerificationResponse,
@@ -23,13 +21,12 @@ import {
   UpdateQuestionFullPayload,
   UpdateQuestionFullResponse,
   AvailableProvidersResponse,
-  Admin,
   CreateAdminDto,
   UpdateAdminDto,
   AdminResponse,
   AdminsListResponse
 } from '../models/admin';
-import { Question, QuestionResponse, DeleteQuestionResponse } from '../models/game';
+import { QuestionResponse, DeleteQuestionResponse } from '../models/game';
 
 /**
  * AdminService

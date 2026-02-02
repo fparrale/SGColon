@@ -17,11 +17,11 @@ export class LanguageSelectorComponent {
 
   currentLang = computed(() => {
     const code = this.languageService.currentLanguage();
-    return this.languageService.availableLanguages.find(l => l.code === code);
+    return this.languageService.getTranslatedLanguages().find(l => l.code === code);
   });
 
   get availableLanguages() {
-    return this.languageService.availableLanguages;
+    return this.languageService.getTranslatedLanguages();
   }
 
   @HostListener('document:click', ['$event'])

@@ -59,7 +59,7 @@
                 <label for="language">{{ 'admin.rooms.roomLanguage' | translate }}</label>
                 <p class="help-text">{{ 'admin.rooms.roomLanguageHelp' | translate }}</p>
                 <select id="language" formControlName="language" class="form-select">
-                    <option *ngFor="let lang of languageService.availableLanguages" [value]="lang.code">
+                    <option *ngFor="let lang of languageService.getTranslatedLanguages()" [value]="lang.code">
                         {{ lang.flag }} {{ lang.name }}
                     </option>
                 </select>

@@ -1,99 +1,45 @@
 import { Routes } from '@angular/router';
-import { GameStartComponent } from './features/game/start/game-start.component';
-import { GameBoardComponent } from './features/game/board/game-board.component';
-import { AdminLoginComponent } from './features/admin/login/admin-login.component';
-import { AdminDashboardComponent } from './features/admin/dashboard/admin-dashboard.component';
-import { AdminQuestionsComponent } from './features/admin/questions/admin-questions.component';
-import { AdminSettingsComponent } from './features/admin/settings/admin-settings.component';
-import { AdminPlayersComponent } from './features/admin/players/admin-players.component';
-import { AdminRoomsComponent } from './features/admin/rooms/admin-rooms.component';
-import { AdminManagementComponent } from './features/admin/admin-management/admin-management.component';
-import { PlayerProfileComponent } from './features/profile/player-profile.component';
-import { LeaderboardComponent } from './features/leaderboard/leaderboard.component';
-import { AdminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-  // Admin - Login (Public access needed to login)
+  // Admin - Login (Public access needed)
   {
     path: 'admin/login',
-    component: AdminLoginComponent,
+    loadComponent: () => import('./features/admin/login/admin-login.component').then(m => m.AdminLoginComponent),
     data: { title: 'Acceso de Administrador' }
+  },
+
+  // Admin Feature (Protected - lazy loaded as feature)
+  {
+    path: 'admin',
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },
 
   // Public - Player Entry
   {
     path: 'play',
-    component: GameStartComponent,
+    loadComponent: () => import('./features/game/start/game-start.component').then(m => m.GameStartComponent),
     data: { title: 'Ingreso de Jugador' }
   },
 
-  // Public - Game Board (Game session)
+  // Public - Game Board
   {
     path: 'game/board',
-    component: GameBoardComponent,
+    loadComponent: () => import('./features/game/board/game-board.component').then(m => m.GameBoardComponent),
     data: { title: 'Tablero del Juego' }
   },
 
   // Public - Leaderboard
   {
     path: 'leaderboard',
-    component: LeaderboardComponent,
+    loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent),
     data: { title: 'Clasificación' }
   },
 
   // Public - Player Profile
   {
     path: 'profile',
-    component: PlayerProfileComponent,
+    loadComponent: () => import('./features/profile/player-profile.component').then(m => m.PlayerProfileComponent),
     data: { title: 'Mi Perfil' }
-  },
-
-  // Admin - Dashboard (Protected)
-  {
-    path: 'admin/dashboard',
-    canActivate: [AdminGuard],
-    component: AdminDashboardComponent,
-    data: { title: 'Panel de Administrador' }
-  },
-
-  // Admin - Questions Management (Protected)
-  {
-    path: 'admin/questions',
-    canActivate: [AdminGuard],
-    component: AdminQuestionsComponent,
-    data: { title: 'Gestión de Preguntas' }
-  },
-
-  // Admin - Settings (Protected)
-  {
-    path: 'admin/settings',
-    canActivate: [AdminGuard],
-    component: AdminSettingsComponent,
-    data: { title: 'Configuración de Administrador' }
-  },
-
-  // Admin - Players Management (Protected)
-  {
-    path: 'admin/players',
-    canActivate: [AdminGuard],
-    component: AdminPlayersComponent,
-    data: { title: 'Gestión de Jugadores' }
-  },
-
-  // Admin - Rooms Management (Protected)
-  {
-    path: 'admin/rooms',
-    canActivate: [AdminGuard],
-    component: AdminRoomsComponent,
-    data: { title: 'Gestión de Salas' }
-  },
-
-  // Admin - Administrators Management (Protected)
-  {
-    path: 'admin/admins',
-    canActivate: [AdminGuard],
-    component: AdminManagementComponent,
-    data: { title: 'Gestión de Administradores' }
   },
 
   {
@@ -107,3 +53,4 @@ export const routes: Routes = [
     redirectTo: '/play'
   }
 ];
+

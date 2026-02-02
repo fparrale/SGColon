@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { TranslatePipe, TranslateService, LangChangeEvent } from '@ngx-translate/core';
@@ -12,8 +11,9 @@ import { RoomService } from '../../../core/services/room.service';
 import { AdminService } from '../../../core/services/admin.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
-import { LanguageService, SupportedLanguage } from '../../../core/services/language.service';
+import { LanguageService } from '../../../core/services/language.service';
 import { NOTIFICATION_DURATION } from '../../../core/constants/notification-config.const';
+import { registerCharts } from '../shared/chart-register.helper';
 
 import {
   GameRoom,
@@ -139,7 +139,10 @@ export class AdminRoomsComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {
+    // Register Chart.js components lazily
+    registerCharts();
+  }
 
   ngOnInit(): void {
     // Initialize translations for charts

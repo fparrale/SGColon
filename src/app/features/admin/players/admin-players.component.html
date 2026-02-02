@@ -316,30 +316,32 @@
         @if (selectedPlayerStats()!.topics && selectedPlayerStats()!.topics!.length > 0) {
         <div class="topics-section">
           <h3 class="admin-section-title dark">{{ 'admin.players.categoryDetail' | translate }}</h3>
-          <table class="admin-table topics-table">
-            <thead>
-              <tr>
-                <th>{{ 'admin.players.category' | translate }}</th>
-                <th>{{ 'admin.players.answers' | translate }}</th>
-                <th>{{ 'admin.players.accuracy' | translate }}</th>
-                <th>{{ 'admin.players.avgTime' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (topic of selectedPlayerStats()!.topics!; track topic.category_id) {
-              <tr>
-                <td class="category-name">{{ topic.category_name }}</td>
-                <td>{{ topic.answers }}</td>
-                <td>
-                  <span class="accuracy-badge" [class.high]="topic.accuracy >= 80">
-                    {{ topic.accuracy.toFixed(1) }}%
-                  </span>
-                </td>
-                <td>{{ topic.avg_time_sec.toFixed(1) }}s</td>
-              </tr>
-              }
-            </tbody>
-          </table>
+          <div class="admin-table-container">
+            <table class="admin-table topics-table">
+              <thead>
+                <tr>
+                  <th>{{ 'admin.players.category' | translate }}</th>
+                  <th>{{ 'admin.players.answers' | translate }}</th>
+                  <th>{{ 'admin.players.accuracy' | translate }}</th>
+                  <th>{{ 'admin.players.avgTime' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (topic of selectedPlayerStats()!.topics!; track topic.category_id) {
+                <tr>
+                  <td class="category-name">{{ topic.category_name }}</td>
+                  <td>{{ topic.answers }}</td>
+                  <td>
+                    <span class="accuracy-badge" [class.high]="topic.accuracy >= 80">
+                      {{ topic.accuracy.toFixed(1) }}%
+                    </span>
+                  </td>
+                  <td>{{ topic.avg_time_sec.toFixed(1) }}s</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
         }
 

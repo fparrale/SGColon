@@ -680,23 +680,6 @@
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .admin-header {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px 20px;
-  }
-
-  .header-left {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .header-right {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .page-title {
     font-size: 18px;
   }

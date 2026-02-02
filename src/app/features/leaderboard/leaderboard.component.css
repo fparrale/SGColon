@@ -505,6 +505,17 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+.btn-info {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.btn-info:hover {
+  background: #f8f9fa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
 .btn i {
   font-size: 20px;
   line-height: 1;

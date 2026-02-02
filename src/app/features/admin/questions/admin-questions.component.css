@@ -200,7 +200,7 @@
 
 .filters-grid {
   display: grid;
-  grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr auto;
   gap: 20px;
   align-items: end;
 }
@@ -255,7 +255,7 @@
 .results-count {
   display: flex;
   align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .results-count p {
@@ -609,22 +609,7 @@
     padding: 12px;
   }
 
-  .questions-header {
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-
-  .header-title {
-    gap: 12px;
-  }
-
-  .header-text h1 {
-    font-size: 22px;
-  }
-
-  .header-subtitle {
-    font-size: 12px;
-  }
+  /* Legacy header classes removed - now using admin-header-* classes from shared styles */
 
   .form-grid {
     grid-template-columns: 1fr;
@@ -653,14 +638,7 @@
 }
 
 @media (max-width: 480px) {
-  .header-title {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .header-text h1 {
-    font-size: 18px;
-  }
+  /* Legacy header classes removed - now using admin-header-* classes from shared styles */
 
   .action-buttons {
     flex-wrap: wrap;

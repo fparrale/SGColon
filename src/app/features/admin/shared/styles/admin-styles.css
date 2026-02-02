@@ -138,7 +138,8 @@
 @media (max-width: 480px) {
     .admin-header-title {
         flex-direction: column;
-        text-align: center;
+        align-items: flex-start;
+        /* text-align: center; */
     }
 
     .admin-header-text h1 {
@@ -982,7 +983,7 @@ code {
 .search-input-wrapper {
     position: relative;
     flex: 1;
-    max-width: 500px;
+    min-width: 200px;
 }
 
 .search-input-wrapper i {

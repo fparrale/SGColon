@@ -3,10 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
-  SessionResponse,
-  QuestionResponse,
-  AnswerRequest,
-  AnswerResponse,
   LeaderboardResponse,
   SessionStatsResponse
 } from '../models/game';

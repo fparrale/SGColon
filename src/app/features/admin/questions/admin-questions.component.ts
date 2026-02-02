@@ -164,7 +164,7 @@ export class AdminQuestionsComponent implements OnInit {
 
     const quantity = parseInt(value, 10);
 
-    if (isNaN(quantity) || quantity < 1 || quantity > 50) {
+    if (isNaN(quantity) || quantity < 1 || quantity > 10) {
       return { invalidQuantity: true };
     }
 
@@ -174,6 +174,32 @@ export class AdminQuestionsComponent implements OnInit {
   ngOnInit(): void {
     this.loadQuestions();
     this.loadCategories();
+  }
+
+  /**
+   * Handles input event for quantity field - filters non-numeric characters
+   * and enforces 1-10 range
+   */
+  onQuantityInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    // Remove any non-digit characters
+    let value = input.value.replace(/[^0-9]/g, '');
+
+    // Convert to number and enforce range
+    if (value) {
+      let numValue = parseInt(value, 10);
+      if (numValue > 10) {
+        numValue = 10;
+      }
+      if (numValue < 1 && value !== '') {
+        numValue = 1;
+      }
+      value = numValue.toString();
+    }
+
+    // Update the input value and form control
+    input.value = value;
+    this.generatorForm.get('quantity')?.setValue(value ? parseInt(value, 10) : null);
   }
 
   /**

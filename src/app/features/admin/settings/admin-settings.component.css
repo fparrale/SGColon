@@ -7,7 +7,6 @@
   color: white;
 }
 
-
 /* ============================================================================
    CONTENT
    ============================================================================ */
@@ -309,15 +308,6 @@
    RESPONSIVE DESIGN
    ============================================================================ */
 @media (max-width: 1024px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    width: 100%;
-  }
-
   .btn-sm {
     flex: 1;
   }
@@ -337,27 +327,6 @@
 }
 
 @media (max-width: 768px) {
-  .admin-settings-container {
-    padding: 12px;
-  }
-
-  .settings-header {
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-
-  .header-title {
-    gap: 12px;
-  }
-
-  .header-text h1 {
-    font-size: 22px;
-  }
-
-  .header-subtitle {
-    font-size: 12px;
-  }
-
   .card-body {
     padding: 16px;
   }
@@ -390,15 +359,6 @@
 }
 
 @media (max-width: 480px) {
-  .header-title {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .header-text h1 {
-    font-size: 18px;
-  }
-
   .form-textarea {
     min-height: 200px;
     font-size: 11px;
@@ -421,13 +381,20 @@
   }
 
   .slider-container {
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   }
 
   .slider-label {
-    width: 100%;
-    justify-content: flex-start;
+    width: auto;
+    min-width: auto;
+    font-size: 11px;
+    justify-content: center;
+  }
+
+  .slider-label i {
+    font-size: 12px;
   }
 
   .btn {
@@ -541,12 +508,89 @@
 @media (max-width: 768px) {
   .category-item {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .category-info {
+    gap: 6px;
+  }
+
+  .category-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .category-name {
+    font-size: 15px;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .category-id {
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+
+  .category-description {
+    font-size: 13px;
+  }
+
+  /* Actions container inside category-item */
+  .category-item .action-buttons {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-bottom: 0;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
   }
 
   .category-actions-buttons {
     width: 100%;
     justify-content: flex-end;
+  }
+
+  /* Confirm buttons responsive */
+  .confirm-buttons {
+    gap: 8px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .category-item {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .category-name {
+    font-size: 14px;
+  }
+
+  .category-description {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Make confirm buttons more visible on small screens */
+  .category-item .confirm-buttons {
+    gap: 10px;
+  }
+
+  .category-item .btn-confirm {
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+
+  .category-item .confirm-yes {
+    background: rgba(39, 174, 96, 0.15);
+  }
+
+  .category-item .confirm-no {
+    background: rgba(231, 76, 60, 0.15);
   }
 }
 
@@ -730,10 +774,17 @@
 .input-footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 1.5rem;
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #e8ecf1;
+}
+
+/* On mobile, reduce the gap */
+@media (max-width: 768px) {
+  .input-footer {
+    gap: 0.5rem;
+  }
 }
 
 .input-info {

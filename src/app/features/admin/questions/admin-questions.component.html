@@ -80,9 +80,10 @@
             <!-- Cantidad -->
             <div class="form-group">
               <label for="gen-quantity">{{ 'admin.questions.quantityLabel' | translate }}</label>
-              <input id="gen-quantity" type="number" min="1" max="50" formControlName="quantity"
+              <input id="gen-quantity" type="text" inputmode="numeric" pattern="[1-9]|10" formControlName="quantity"
+                (input)="onQuantityInput($event)" (keypress)="$event.charCode >= 48 && $event.charCode <= 57"
                 [class.is-invalid]="generatorForm.get('quantity')?.invalid && generatorForm.get('quantity')?.touched"
-                class="form-control">
+                class="form-control" maxlength="2" placeholder="1-10">
               <div class="invalid-feedback"
                 *ngIf="generatorForm.get('quantity')?.invalid && generatorForm.get('quantity')?.touched">
                 <small *ngIf="generatorForm.get('quantity')?.hasError('required')">{{ 'admin.questions.quantityRequired'
@@ -141,15 +142,12 @@
             <i class="fas fa-info-circle"></i>
             {{ 'admin.questions.csvNote' | translate }}
           </p>
-          <button
-            type="button"
-            class="btn btn-secondary btn-download-template"
-            (click)="downloadCsvTemplate()"
+          <button type="button" class="btn btn-secondary btn-download-template" (click)="downloadCsvTemplate()"
             [disabled]="isDownloadingTemplate()">
             @if (isDownloadingTemplate()) {
-              <span class="spinner-small"></span>
+            <span class="spinner-small"></span>
             } @else {
-              <i class="fas fa-download"></i>
+            <i class="fas fa-download"></i>
             }
             {{ 'admin.questions.downloadTemplate' | translate }}
           </button>
@@ -314,7 +312,8 @@
           </thead>
           <tbody>
             @for (question of filteredQuestions(); track question.id) {
-            <tr class="table-row" [ngClass]="{ 'pending-verify': !(question.admin_verified ?? false), 'inactive-question': question.is_active === 0 || question.is_active === false }">
+            <tr class="table-row"
+              [ngClass]="{ 'pending-verify': !(question.admin_verified ?? false), 'inactive-question': question.is_active === 0 || question.is_active === false }">
               <!-- ID -->
               <td class="col-id">
                 <code>{{ question.id }}</code>
@@ -413,23 +412,23 @@
 
                   <!-- Delete with Confirmation (only for active questions) -->
                   @if (question.is_active !== 0 && question.is_active !== false) {
-                    @if (deleteConfirmId() !== question.id) {
-                    <button class="btn-action btn-delete" (click)="deleteQuestion(question.id)"
-                      [title]="'admin.questions.delete' | translate">
-                      <i class="fas fa-trash"></i>
+                  @if (deleteConfirmId() !== question.id) {
+                  <button class="btn-action btn-delete" (click)="deleteQuestion(question.id)"
+                    [title]="'admin.questions.delete' | translate">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                  } @else {
+                  <div class="confirm-buttons">
+                    <button class="btn-confirm confirm-yes" (click)="confirmDelete(question.id)"
+                      [title]="'admin.questions.confirmDeletion' | translate">
+                      <i class="fas fa-check"></i>
                     </button>
-                    } @else {
-                    <div class="confirm-buttons">
-                      <button class="btn-confirm confirm-yes" (click)="confirmDelete(question.id)"
-                        [title]="'admin.questions.confirmDeletion' | translate">
-                        <i class="fas fa-check"></i>
-                      </button>
-                      <button class="btn-confirm confirm-no" (click)="cancelDelete()"
-                        [title]="'admin.questions.cancel' | translate">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                    }
+                    <button class="btn-confirm confirm-no" (click)="cancelDelete()"
+                      [title]="'admin.questions.cancel' | translate">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  }
                   }
                 </div>
               </td>
@@ -460,10 +459,6 @@
 
 <!-- Question Edit Modal Component -->
 @if (isFullEditModalOpen()) {
-  <app-question-edit-modal
-    [questionId]="selectedQuestionId()"
-    [categories]="categories()"
-    (close)="closeFullEditModal()"
-    (saved)="onQuestionSaved()"
-  ></app-question-edit-modal>
+<app-question-edit-modal [questionId]="selectedQuestionId()" [categories]="categories()" (close)="closeFullEditModal()"
+  (saved)="onQuestionSaved()"></app-question-edit-modal>
 }

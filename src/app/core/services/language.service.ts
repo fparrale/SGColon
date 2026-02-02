@@ -12,10 +12,18 @@ export class LanguageService {
 
   readonly currentLanguage = signal<SupportedLanguage>(this.DEFAULT_LANGUAGE);
 
-  readonly availableLanguages: { code: SupportedLanguage; name: string; flag: string }[] = [
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'en', name: 'English', flag: '🇺🇸' }
+  readonly availableLanguages: { code: SupportedLanguage; nameKey: string; flag: string }[] = [
+    { code: 'es', nameKey: 'common.spanish', flag: '🇪🇸' },
+    { code: 'en', nameKey: 'common.english', flag: '🇺🇸' }
   ];
+
+  getTranslatedLanguages(): { code: SupportedLanguage; name: string; flag: string }[] {
+    return this.availableLanguages.map(lang => ({
+      code: lang.code,
+      name: this.translate.instant(lang.nameKey),
+      flag: lang.flag
+    }));
+  }
 
   constructor(private translate: TranslateService) {
     this.initializeLanguage();
@@ -25,7 +33,7 @@ export class LanguageService {
     const stored = localStorage.getItem(this.STORAGE_KEY) as SupportedLanguage | null;
     const lang = stored && this.isValidLanguage(stored) ? stored : this.DEFAULT_LANGUAGE;
 
-    this.translate.setDefaultLang(this.DEFAULT_LANGUAGE);
+    this.translate.setFallbackLang(this.DEFAULT_LANGUAGE);
     this.setLanguage(lang);
   }
 
@@ -57,6 +65,6 @@ export class LanguageService {
 
   getLanguageName(code: SupportedLanguage): string {
     const lang = this.availableLanguages.find(l => l.code === code);
-    return lang ? lang.name : code;
+    return lang ? this.translate.instant(lang.nameKey) : code;
   }
 }
