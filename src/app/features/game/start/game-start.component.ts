@@ -7,11 +7,12 @@ import { PlayerService } from '../../../core/services/player.service';
 import { RoomService } from '../../../core/services/room.service';
 import { LanguageService } from '../../../core/services/language.service';
 import { GameRoom } from '../../../core/models/room';
+import { LanguageSelectorComponent } from '../../../shared/components/language-selector/language-selector.component';
 
 @Component({
   selector: 'app-game-start',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LanguageSelectorComponent],
   templateUrl: './game-start.component.html',
   styleUrls: ['./game-start.component.css']
 })
@@ -138,6 +139,12 @@ export class GameStartComponent {
             localStorage.removeItem('roomCode');
           }
 
+          const currentLang = this.languageService.getCurrentLanguage();
+          this.languageService.setUserPreference('player', response.player.id, currentLang).subscribe({
+            next: () => { },
+            error: (err) => console.warn('Could not sync language preference:', err)
+          });
+
           // Redirigir al tablero de juego
           this.router.navigate(['/game/board']);
         } else {
@@ -219,9 +226,10 @@ export class GameStartComponent {
           this.validatedRoom.set(response.room);
           this.roomError.set('');
 
-          // Change language based on room language
-          if (response.room.language) {
-            this.languageService.setLanguageForRoom(response.room.language as 'es' | 'en');
+          // Si el jugador no tiene idioma guardado, usar el de la sala
+          const currentLang = localStorage.getItem('sg_ia_language');
+          if (!currentLang && response.room.language) {
+            this.languageService.setLanguage(response.room.language as 'es' | 'en');
           }
         } else {
           this.roomValidated.set(false);

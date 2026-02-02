@@ -494,3 +494,11 @@
     width: 100%;
   }
 }
+
+/* Language Selector */
+.language-selector-wrapper {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+}

@@ -29,6 +29,15 @@
           <span class="score-value">{{ score() }}</span>
         </div>
       </div>
+
+      <div class="game-controls ml-4" style="margin-left: 1rem;">
+        <button class="btn-abandon" (click)="openAbandonModal()"
+          [disabled]="gameState() !== 'playing' && gameState() !== 'feedback'"
+          [attr.aria-label]="'game.abandon.button' | translate">
+          <i class="fas fa-door-open"></i>
+          <span class="d-none d-md-inline ms-2">{{ 'game.abandon.button' | translate }}</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -312,4 +321,9 @@
     </div>
     }
   </div>
+
+  @if (showAbandonModal()) {
+  <app-abandon-confirmation-modal (confirm)="confirmAbandon()" (cancel)="cancelAbandon()">
+  </app-abandon-confirmation-modal>
+  }
 </div>

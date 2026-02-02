@@ -555,7 +555,8 @@ export class AdminRoomsComponent implements OnInit, OnDestroy {
     if (!roomId) return;
 
     this.isExporting.set(true);
-    this.roomService.exportRoomPdf(roomId).subscribe({
+    const currentLanguage = this.languageService.getCurrentLanguage();
+    this.roomService.exportRoomPdf(roomId, currentLanguage).subscribe({
       next: (blob) => {
         this.downloadBlob(blob, `sala_${this.selectedRoom()?.room_code}_reporte.pdf`);
         this.notification.success(this.translate.instant('admin.rooms.notifications.pdf_success'), NOTIFICATION_DURATION.SHORT);
@@ -573,7 +574,8 @@ export class AdminRoomsComponent implements OnInit, OnDestroy {
     if (!roomId) return;
 
     this.isExporting.set(true);
-    this.roomService.exportRoomExcel(roomId).subscribe({
+    const currentLanguage = this.languageService.getCurrentLanguage();
+    this.roomService.exportRoomExcel(roomId, currentLanguage).subscribe({
       next: (blob) => {
         this.downloadBlob(blob, `sala_${this.selectedRoom()?.room_code}_reporte.xlsx`);
         this.notification.success(this.translate.instant('admin.rooms.notifications.excel_success'), NOTIFICATION_DURATION.SHORT);

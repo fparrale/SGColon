@@ -14,11 +14,12 @@ import {
 } from '../../../core/models/game/game-flow.interface';
 import { HttpStatus } from '../../../core/constants/http-status.const';
 import { NOTIFICATION_DURATION } from '../../../core/constants/notification-config.const';
+import { AbandonConfirmationModalComponent } from './abandon-confirmation-modal.component';
 
 @Component({
   selector: 'app-game-board',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, AbandonConfirmationModalComponent],
   templateUrl: './game-board.component.html',
   styleUrls: ['./game-board.component.css']
 })
@@ -116,11 +117,9 @@ export class GameBoardComponent implements OnInit {
     // Iniciar sesión de juego (con código de sala si existe)
     this.gameService.startSession(this.playerId, 1.0, this.roomCode || undefined).subscribe({
       next: (session: GameSession) => {
-        console.log('next session', session);
         if (session.session_id) {
           this.sessionId.set(session.session_id);
           this.difficulty.set(session.current_difficulty);
-
           // Guardar información de la sala si existe
           if (session.room) {
             this.currentRoom.set(session.room);
@@ -236,6 +235,43 @@ export class GameBoardComponent implements OnInit {
 
   private showErrorMessage(message: string): void {
     this.notification.error(message, NOTIFICATION_DURATION.LONG);
+  }
+
+  showAbandonModal = signal<boolean>(false);
+
+  openAbandonModal(): void {
+    if (this.gameState() === 'playing' || this.gameState() === 'feedback') {
+      this.showAbandonModal.set(true);
+    }
+  }
+
+  cancelAbandon(): void {
+    this.showAbandonModal.set(false);
+  }
+
+  confirmAbandon(): void {
+    this.showAbandonModal.set(false);
+    const sessionId = this.sessionId();
+
+    if (!sessionId) return;
+
+    this.gameService.abandonSession(sessionId).subscribe({
+      next: (response) => {
+        if (response.ok) {
+          // Mostrar mensaje confirmando el abandono
+          const message = this.translate.instant('game.abandon.success');
+          this.notification.warning(message, NOTIFICATION_DURATION.SHORT);
+
+          // Redirigir al ranking (igual que al terminar el juego exitosamente)
+          this.router.navigate(['/leaderboard']);
+        }
+      },
+      error: (error) => {
+        const message = this.translate.instant('game.abandon.error');
+        this.notification.error(message, NOTIFICATION_DURATION.DEFAULT);
+        console.error('Error abandoning game:', error);
+      }
+    });
   }
 
   selectOption(optionId: number): void {

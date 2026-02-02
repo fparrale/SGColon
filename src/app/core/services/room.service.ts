@@ -181,25 +181,31 @@ export class RoomService {
   /**
    * Exporta el reporte de una sala a PDF
    *
-   * Backend: GET /admin/rooms/{id}/export/pdf
+   * Backend: GET /admin/rooms/{id}/export/pdf?language=es|en
    */
-  exportRoomPdf(roomId: number): Observable<Blob> {
-    return this.http.get(
-      `${this.apiUrl}${environment.apiEndpoints.admin.exportRoomPdf(roomId)}`,
-      { responseType: 'blob' }
-    );
+  exportRoomPdf(roomId: number, language?: string): Observable<Blob> {
+    const url = `${this.apiUrl}${environment.apiEndpoints.admin.exportRoomPdf(roomId)}`;
+    const options = {
+      responseType: 'blob' as const,
+      observe: 'body' as const,
+      ...(language && { params: { language } })
+    };
+    return this.http.get(url, options);
   }
 
   /**
    * Exporta el reporte de una sala a Excel
    *
-   * Backend: GET /admin/rooms/{id}/export/excel
+   * Backend: GET /admin/rooms/{id}/export/excel?language=es|en
    */
-  exportRoomExcel(roomId: number): Observable<Blob> {
-    return this.http.get(
-      `${this.apiUrl}${environment.apiEndpoints.admin.exportRoomExcel(roomId)}`,
-      { responseType: 'blob' }
-    );
+  exportRoomExcel(roomId: number, language?: string): Observable<Blob> {
+    const url = `${this.apiUrl}${environment.apiEndpoints.admin.exportRoomExcel(roomId)}`;
+    const options = {
+      responseType: 'blob' as const,
+      observe: 'body' as const,
+      ...(language && { params: { language } })
+    };
+    return this.http.get(url, options);
   }
 
   // ========== PUBLIC METHODS ==========

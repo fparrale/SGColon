@@ -411,3 +411,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Language Selector */
+.language-selector-wrapper {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+}

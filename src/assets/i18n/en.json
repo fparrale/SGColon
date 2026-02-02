@@ -134,6 +134,16 @@
       "noErrors": "Excellent! You made no mistakes.",
       "errorsLoadError": "Error loading mistakes"
     },
+    "abandon": {
+      "button": "Abandon Game",
+      "title": "Abandon Game?",
+      "message": "You are about to abandon the current game.",
+      "warning": "Your progress will be saved but you'll lose the chance to improve your score.",
+      "confirm": "Yes, Abandon",
+      "cancel": "Continue Playing",
+      "success": "Game abandoned. Your progress has been saved.",
+      "error": "Could not abandon the game. Please try again."
+    },
     "notifications": {
       "board": {
         "start_error": "Error starting the game. Try again.",
@@ -959,7 +969,8 @@
       "notAdmin": "Are you not an admin?",
       "questionManagement": "Question Management",
       "aiConfiguration": "AI Configuration",
-      "dataAnalysis": "Data Analysis"
+      "dataAnalysis": "Data Analysis",
+      "forgot_password": "Forgot your password?"
     },
     "categories": {
       "title": "Category Management",
@@ -1060,5 +1071,9 @@
     "createdSuccessfully": "Created successfully",
     "updatedSuccessfully": "Updated successfully",
     "confirmAction": "Are you sure you want to perform this action?"
+  },
+  "preferences": {
+    "language_updated": "Interface language updated",
+    "language_load_error": "Could not load language preference"
   }
 }

@@ -1,6 +1,7 @@
 import { Component, computed, ElementRef, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService, SupportedLanguage } from '../../../core/services/language.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-language-selector',
@@ -11,6 +12,7 @@ import { LanguageService, SupportedLanguage } from '../../../core/services/langu
 })
 export class LanguageSelectorComponent {
   private languageService = inject(LanguageService);
+  private authService = inject(AuthService);
   private elementRef = inject(ElementRef);
 
   isOpen = false;
@@ -36,7 +38,21 @@ export class LanguageSelectorComponent {
   }
 
   selectLanguage(lang: SupportedLanguage): void {
-    this.languageService.setLanguage(lang);
+    // Obtener información del usuario (admin o player)
+    const adminUser = this.authService.getCurrentUser();
+    const playerId = localStorage.getItem('playerId');
+
+    if (adminUser) {
+      // Usuario admin logueado
+      this.languageService.setLanguage(lang, 'admin', adminUser.id);
+    } else if (playerId) {
+      // Jugador en sesión
+      this.languageService.setLanguage(lang, 'player', parseInt(playerId));
+    } else {
+      // Sin usuario logueado, solo cambio local
+      this.languageService.setLanguage(lang);
+    }
+
     this.isOpen = false;
   }
 }

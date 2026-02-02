@@ -5,14 +5,16 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { LanguageService } from '../../../core/services/language.service';
 import { AuthResponse } from '../../../core/models/auth';
 import { HttpStatus } from '../../../core/constants/http-status.const';
 import { NOTIFICATION_DURATION } from '../../../core/constants/notification-config.const';
+import { LanguageSelectorComponent } from '../../../shared/components/language-selector/language-selector.component';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LanguageSelectorComponent],
   templateUrl: './admin-login.component.html',
   styleUrls: ['./admin-login.component.css']
 })
@@ -27,7 +29,8 @@ export class AdminLoginComponent {
     private authService: AuthService,
     private notification: NotificationService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private languageService: LanguageService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.maxLength(100), this.emailValidator]],
@@ -94,6 +97,17 @@ export class AdminLoginComponent {
 
           // Notificar éxito
           this.notification.success(this.translate.instant('errors.login_success'), NOTIFICATION_DURATION.SHORT);
+
+          // Obtener preferencia de idioma del admin
+          const user = this.authService.getCurrentUser();
+          if (user) {
+            this.languageService.getUserPreference('admin', user.id).subscribe({
+              next: (pref) => {
+                this.languageService.setLanguage(pref.language);
+              },
+              error: (err) => console.warn('Could not load language preference:', err)
+            });
+          }
 
           // Esperar un momento para que el token se propague
           setTimeout(() => {

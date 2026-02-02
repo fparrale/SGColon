@@ -134,6 +134,16 @@
       "noErrors": "¡Excelente! No cometiste errores.",
       "errorsLoadError": "Error al cargar los errores"
     },
+    "abandon": {
+      "button": "Abandonar Juego",
+      "title": "¿Abandonar el Juego?",
+      "message": "Estás a punto de abandonar la partida actual.",
+      "warning": "Tu progreso se guardará pero perderás la oportunidad de mejorar tu puntuación.",
+      "confirm": "Sí, Abandonar",
+      "cancel": "Continuar Jugando",
+      "success": "Juego abandonado. Tu progreso ha sido guardado.",
+      "error": "No se pudo abandonar el juego. Intenta nuevamente."
+    },
     "notifications": {
       "board": {
         "start_error": "Error al iniciar el juego. Intenta de nuevo.",
@@ -979,7 +989,8 @@
       "notAdmin": "¿No eres administrador?",
       "questionManagement": "Gestión de preguntas",
       "aiConfiguration": "Configuración de IA",
-      "dataAnalysis": "Análisis de datos"
+      "dataAnalysis": "Análisis de datos",
+      "forgot_password": "¿Olvidaste tu contraseña?"
     },
     "categories": {
       "title": "Gestión de Categorías",
@@ -1080,5 +1091,9 @@
     "createdSuccessfully": "Creado exitosamente",
     "updatedSuccessfully": "Actualizado exitosamente",
     "confirmAction": "¿Estás seguro de realizar esta acción?"
+  },
+  "preferences": {
+    "language_updated": "Idioma de interfaz actualizado",
+    "language_load_error": "No se pudo cargar la preferencia de idioma"
   }
 }

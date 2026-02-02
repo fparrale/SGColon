@@ -23,7 +23,11 @@ export class AuthService {
   );
   public token$ = this.tokenSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+
+
+  constructor(
+    private http: HttpClient
+  ) {
     this.apiUrl = environment.apiBaseUrl;
   }
 

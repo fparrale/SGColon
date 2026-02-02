@@ -4,3 +4,4 @@ export * from './answer.interface';
 export * from './session-stats.interface';
 export * from './leaderboard.interface';
 export * from './delete-question-response.interface';
+export * from './abandon-session-response.model';

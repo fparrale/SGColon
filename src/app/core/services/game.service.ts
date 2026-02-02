@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   LeaderboardResponse,
-  SessionStatsResponse
+  SessionStatsResponse,
+  AbandonSessionResponse
 } from '../models/game';
 import {
   GameSession,
@@ -132,5 +133,13 @@ export class GameService {
     return this.http.get<LeaderboardResponse>(
       `${this.apiUrl}${environment.apiEndpoints.stats.leaderboard}`
     );
+  }
+
+  /**
+   * Abandona voluntariamente una sesión de juego activa
+   */
+  abandonSession(sessionId: number): Observable<AbandonSessionResponse> {
+    const url = `${this.apiUrl}${environment.apiEndpoints.games.abandon(sessionId)}`;
+    return this.http.post<AbandonSessionResponse>(url, {});
   }
 }

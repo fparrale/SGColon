@@ -6,7 +6,8 @@
  */
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://franklinparrales.es/SGcolon/public',
+  // apiBaseUrl: 'https://franklinparrales.es/SGcolon/public',
+  apiBaseUrl: 'http://localhost:8000',
   apiEndpoints: {
     // ========== AUTH (PUBLIC) ==========
     // AuthController - Autenticación de administradores
@@ -39,7 +40,9 @@ export const environment = {
       /** GET /games/next - Obtener siguiente pregunta */
       next: '/games/next',
       /** POST /games/{sessionId}/answer - Enviar respuesta */
-      answer: (sessionId: number) => `/games/${sessionId}/answer`
+      answer: (sessionId: number) => `/games/${sessionId}/answer`,
+      /** POST /games/{id}/abandon - Abandonar juego */
+      abandon: (id: number) => `/games/${id}/abandon`
     },
 
     // ========== QUESTIONS (PUBLIC) ==========

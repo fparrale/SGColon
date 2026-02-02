@@ -372,7 +372,6 @@ export class AdminQuestionsComponent implements OnInit {
     this.adminService.verifyBulk({ verify_all_pending: true }).subscribe({
       next: (response) => {
         if (response.ok) {
-          console.log('aa', response.message);
           this.notification.success(response.message || this.translate.instant('admin.questions.notifications.bulk_verify_success', { count: response.verified_count }), NOTIFICATION_DURATION.DEFAULT);
           this.loadQuestions(); // Recargar preguntas
         } else {
@@ -714,13 +713,10 @@ export class AdminQuestionsComponent implements OnInit {
 
     this.adminService.importCsv(file).subscribe({
       next: (response: any) => {
-        console.log('response', response)
         this.lastImportResult.set(response);
 
         if (response.ok) {
           if (response.errors > 0) {
-            console.log('response with errors', response);
-
             this.notification.warning(
               this.translate.instant('admin.questions.notifications.csv_import_partial', { imported: response.imported, errors: response.errors }),
               NOTIFICATION_DURATION.LONG
