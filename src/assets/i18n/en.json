@@ -285,6 +285,8 @@
       "newRoom": "New Room",
       "roomCode": "Room Code",
       "roomName": "Room Name",
+      "roomFilename": "room",
+      "reportFilename": "report",
       "maxPlayers": "Max Players",
       "filterCategories": "Filter Categories",
       "filterDifficulties": "Filter Difficulties",

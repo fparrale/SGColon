@@ -558,7 +558,12 @@ export class AdminRoomsComponent implements OnInit, OnDestroy {
     const currentLanguage = this.languageService.getCurrentLanguage();
     this.roomService.exportRoomPdf(roomId, currentLanguage).subscribe({
       next: (blob) => {
-        this.downloadBlob(blob, `sala_${this.selectedRoom()?.room_code}_reporte.pdf`);
+        const roomPrefix = this.translate.instant('admin.rooms.roomFilename');
+        const reportSuffix = this.translate.instant('admin.rooms.reportFilename');
+        const roomCode = this.selectedRoom()?.room_code || 'report';
+        const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+
+        this.downloadBlob(blob, `${roomPrefix}_${roomCode}_${dateStr}.pdf`);
         this.notification.success(this.translate.instant('admin.rooms.notifications.pdf_success'), NOTIFICATION_DURATION.SHORT);
         this.isExporting.set(false);
       },
@@ -577,7 +582,12 @@ export class AdminRoomsComponent implements OnInit, OnDestroy {
     const currentLanguage = this.languageService.getCurrentLanguage();
     this.roomService.exportRoomExcel(roomId, currentLanguage).subscribe({
       next: (blob) => {
-        this.downloadBlob(blob, `sala_${this.selectedRoom()?.room_code}_reporte.xlsx`);
+        const roomPrefix = this.translate.instant('admin.rooms.roomFilename');
+        const reportSuffix = this.translate.instant('admin.rooms.reportFilename');
+        const roomCode = this.selectedRoom()?.room_code || 'report';
+        const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+
+        this.downloadBlob(blob, `${roomPrefix}_${roomCode}_${dateStr}.xlsx`);
         this.notification.success(this.translate.instant('admin.rooms.notifications.excel_success'), NOTIFICATION_DURATION.SHORT);
         this.isExporting.set(false);
       },

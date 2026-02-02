@@ -285,6 +285,8 @@
       "newRoom": "Nueva Sala",
       "roomCode": "Código de Sala",
       "roomName": "Nombre de la Sala",
+      "roomFilename": "sala",
+      "reportFilename": "reporte",
       "maxPlayers": "Máximo de Jugadores",
       "filterCategories": "Filtrar por Categorías",
       "filterDifficulties": "Filtrar por Dificultad",
