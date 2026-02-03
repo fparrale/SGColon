@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  // apiBaseUrl: 'https://franklinparrales.es/SGcolon/public',
-  apiBaseUrl: 'http://localhost:8000',
+  apiBaseUrl: 'https://franklinparrales.es/SGcolon/public',
+  // apiBaseUrl: 'http://localhost:8000',
   apiEndpoints: {
     // ========== AUTH (PUBLIC) ==========
     // AuthController - Autenticación de administradores
@@ -165,6 +165,13 @@ export const environment = {
       /** PATCH /admin/admins/:id/status - Cambiar estado (superadmin) */
       toggleAdminStatus: (id: number) => `/admin/admins/${id}/status`
 
+    },
+
+    // ========== PASSWORD RESET ==========
+    passwordReset: {
+      request: '/password-reset/request',
+      verify: '/password-reset/verify',
+      reset: '/password-reset/reset'
     },
 
     // ========== ROOMS PUBLIC ==========
