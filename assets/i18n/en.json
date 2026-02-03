@@ -134,6 +134,16 @@
       "noErrors": "Excellent! You made no mistakes.",
       "errorsLoadError": "Error loading mistakes"
     },
+    "abandon": {
+      "button": "Abandon Game",
+      "title": "Abandon Game?",
+      "message": "You are about to abandon the current game.",
+      "warning": "Your progress will be saved but you'll lose the chance to improve your score.",
+      "confirm": "Yes, Abandon",
+      "cancel": "Continue Playing",
+      "success": "Game abandoned. Your progress has been saved.",
+      "error": "Could not abandon the game. Please try again."
+    },
     "notifications": {
       "board": {
         "start_error": "Error starting the game. Try again.",
@@ -275,6 +285,8 @@
       "newRoom": "New Room",
       "roomCode": "Room Code",
       "roomName": "Room Name",
+      "roomFilename": "room",
+      "reportFilename": "report",
       "maxPlayers": "Max Players",
       "filterCategories": "Filter Categories",
       "filterDifficulties": "Filter Difficulties",
@@ -959,7 +971,8 @@
       "notAdmin": "Are you not an admin?",
       "questionManagement": "Question Management",
       "aiConfiguration": "AI Configuration",
-      "dataAnalysis": "Data Analysis"
+      "dataAnalysis": "Data Analysis",
+      "forgot_password": "Forgot your password?"
     },
     "categories": {
       "title": "Category Management",
@@ -1060,5 +1073,50 @@
     "createdSuccessfully": "Created successfully",
     "updatedSuccessfully": "Updated successfully",
     "confirmAction": "Are you sure you want to perform this action?"
+  },
+  "preferences": {
+    "language_updated": "Interface language updated",
+    "language_load_error": "Could not load language preference"
+  },
+  "passwordReset": {
+    "request": {
+      "title": "Recover Password",
+      "subtitle": "Enter your email address to receive a recovery code.",
+      "email_label": "Email",
+      "email_placeholder": "admin@example.com",
+      "email_error": "Enter a valid email",
+      "submit": "Send Code",
+      "back_to_login": "Back to login",
+      "success": "Code sent. Check your email.",
+      "error": "Error sending code. Try again."
+    },
+    "verify": {
+      "title": "Verify Code",
+      "subtitle": "Enter the 6-digit code sent to your email.",
+      "code_label": "Verification Code",
+      "code_placeholder": "000000",
+      "code_error": "The code must have 6 digits",
+      "submit": "Verify Code",
+      "back": "Back",
+      "expired": "Time has expired. Request a new code.",
+      "success": "Code verified successfully",
+      "invalid": "Invalid or expired code",
+      "error": "Error verifying code"
+    },
+    "new": {
+      "title": "New Password",
+      "subtitle": "Create a new secure password for your account.",
+      "password_label": "New Password",
+      "password_placeholder": "Minimum 8 characters",
+      "password_error": "Password is required",
+      "confirm_label": "Confirm Password",
+      "confirm_placeholder": "Repeat password",
+      "mismatch_error": "Passwords do not match",
+      "requirements_title": "Password requirements:",
+      "requirement_length": "At least 8 characters",
+      "submit": "Change Password",
+      "success": "Password updated successfully",
+      "error": "Error updating password"
+    }
   }
 }
