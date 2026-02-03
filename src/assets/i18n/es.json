@@ -1028,7 +1028,8 @@
     "invalid_credentials": "Credenciales inválidas. Intenta de nuevo.",
     "server_connection_error": "Hubo un problema al conectar con el servidor. Intenta de nuevo.",
     "check_credentials": "Credenciales inválidas. Verifica tu correo y contraseña.",
-    "check_internet": "No se puede conectar al servidor. Verifica tu conexión a internet."
+    "check_internet": "No se puede conectar al servidor. Verifica tu conexión a internet.",
+    "account_locked_time": "Cuenta bloqueada temporalmente. Intente nuevamente en unos minutos."
   },
   "leaderboard": {
     "title": "Clasificación Global",
@@ -1097,5 +1098,46 @@
   "preferences": {
     "language_updated": "Idioma de interfaz actualizado",
     "language_load_error": "No se pudo cargar la preferencia de idioma"
+  },
+  "passwordReset": {
+    "request": {
+      "title": "Recuperar Contraseña",
+      "subtitle": "Ingresa tu correo electrónico para recibir un código de recuperación.",
+      "email_label": "Correo Electrónico",
+      "email_placeholder": "admin@ejemplo.com",
+      "email_error": "Ingresa un correo válido",
+      "submit": "Enviar Código",
+      "back_to_login": "Volver al login",
+      "success": "Código enviado. Revisa tu correo.",
+      "error": "Error al enviar el código. Intenta de nuevo."
+    },
+    "verify": {
+      "title": "Verificar Código",
+      "subtitle": "Ingresa el código de 6 dígitos enviado a tu correo.",
+      "code_label": "Código de Verificación",
+      "code_placeholder": "000000",
+      "code_error": "El código debe tener 6 dígitos",
+      "submit": "Verificar Código",
+      "back": "Volver",
+      "expired": "El tiempo ha expirado. Solicita un nuevo código.",
+      "success": "Código verificado correctamente",
+      "invalid": "Código inválido o expirado",
+      "error": "Error al verificar el código"
+    },
+    "new": {
+      "title": "Nueva Contraseña",
+      "subtitle": "Crea una nueva contraseña segura para tu cuenta.",
+      "password_label": "Nueva Contraseña",
+      "password_placeholder": "Mínimo 8 caracteres",
+      "password_error": "La contraseña es requerida",
+      "confirm_label": "Confirmar Contraseña",
+      "confirm_placeholder": "Repite la contraseña",
+      "mismatch_error": "Las contraseñas no coinciden",
+      "requirements_title": "Requisitos de contraseña:",
+      "requirement_length": "Al menos 8 caracteres",
+      "submit": "Cambiar Contraseña",
+      "success": "Contraseña actualizada exitosamente",
+      "error": "Error al actualizar la contraseña"
+    }
   }
 }

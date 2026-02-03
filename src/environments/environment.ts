@@ -173,6 +173,13 @@ export const environment = {
 
     },
 
+    // ========== PASSWORD RESET ==========
+    passwordReset: {
+      request: '/password-reset/request',
+      verify: '/password-reset/verify',
+      reset: '/password-reset/reset'
+    },
+
     // ========== ROOMS PUBLIC ==========
     rooms: {
       /** GET /rooms/validate/{code} - Validar código de sala */

@@ -7,6 +7,27 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/login/admin-login.component').then(m => m.AdminLoginComponent),
     data: { title: 'Acceso de Administrador' }
   },
+  {
+    path: 'admin/password-reset/request',
+    loadComponent: () =>
+      import('./features/admin/password-reset/request/password-reset-request.component')
+        .then(m => m.PasswordResetRequestComponent),
+    data: { title: 'Recuperar Contraseña' }
+  },
+  {
+    path: 'admin/password-reset/verify',
+    loadComponent: () =>
+      import('./features/admin/password-reset/verify/password-reset-verify.component')
+        .then(m => m.PasswordResetVerifyComponent),
+    data: { title: 'Verificar Código' }
+  },
+  {
+    path: 'admin/password-reset/new',
+    loadComponent: () =>
+      import('./features/admin/password-reset/new/password-reset-new.component')
+        .then(m => m.PasswordResetNewComponent),
+    data: { title: 'Nueva Contraseña' }
+  },
 
   // Admin Feature (Protected - lazy loaded as feature)
   {

@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -14,7 +14,7 @@ import { LanguageSelectorComponent } from '../../../shared/components/language-s
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LanguageSelectorComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, LanguageSelectorComponent, RouterLink],
   templateUrl: './admin-login.component.html',
   styleUrls: ['./admin-login.component.css']
 })
