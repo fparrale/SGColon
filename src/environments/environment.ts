@@ -6,8 +6,8 @@
  */
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://franklinparrales.es/SGcolon/public',
-  // apiBaseUrl: 'http://localhost:8000',
+  // apiBaseUrl: 'https://franklinparrales.es/SGcolon/public',
+  apiBaseUrl: 'http://localhost:8000',
   apiEndpoints: {
     // ========== AUTH (PUBLIC) ==========
     // AuthController - Autenticación de administradores

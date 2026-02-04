@@ -6,7 +6,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
-import { PromptConfigResponse, AdminPrompt, AdminCategory, AvailableProvidersResponse } from '../../../core/models/admin';
+import { PromptConfigResponse, AdminCategory, AvailableProvidersResponse } from '../../../core/models/admin';
 import { HttpStatus } from '../../../core/constants/http-status.const';
 import { NOTIFICATION_DURATION } from '../../../core/constants/notification-config.const';
 import { CategoryModalComponent } from '../components/category-modal/category-modal.component';
@@ -31,13 +31,14 @@ export class AdminSettingsComponent implements OnInit {
     { id: 'ia', label: 'admin.settings.artificialIntelligence', icon: 'fas fa-brain' },
     { id: 'juego', label: 'admin.settings.gameCategories', icon: 'fas fa-gamepad' }
   ];
-  activeTab = signal<string>('ia');
+  activeTab = signal<'ia' | 'juego'>('ia');
 
   // ========== FORMULARIOS REACTIVOS ==========
   promptConfigForm!: FormGroup;
 
   // ========== UI STATE ==========
   isLoading = signal<boolean>(true);
+  showPromptGuide = signal(false);
   isSaving = signal<boolean>(false);
   hasChanges = signal<boolean>(false);
 
@@ -83,7 +84,7 @@ export class AdminSettingsComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
       if (tab && this.tabs.some(t => t.id === tab)) {
-        this.activeTab.set(tab);
+        this.activeTab.set(tab as 'ia' | 'juego');
       }
     });
 
@@ -97,7 +98,7 @@ export class AdminSettingsComponent implements OnInit {
    * Cambia el tab activo y actualiza URL
    */
   onTabChange(tabId: string): void {
-    this.activeTab.set(tabId);
+    this.activeTab.set(tabId as 'ia' | 'juego');
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: tabId },
@@ -248,6 +249,13 @@ export class AdminSettingsComponent implements OnInit {
     const cleanProvider = formValue.preferredProvider || 'auto';
     const cleanMaxQuestions = Number(formValue.maxQuestionsPerGame);
 
+    // 1.5 Validar placeholders
+    const missing = this.validatePlaceholders(cleanPrompt);
+    if (missing.length > 0) {
+      this.notification.error(this.translate.instant('admin.settings.notifications.missing_placeholders', { variables: missing.join(', ') }), NOTIFICATION_DURATION.LONG);
+      return;
+    }
+
     this.isSaving.set(true);
 
     // 2. Deshabilitamos el formulario aquí
@@ -256,17 +264,6 @@ export class AdminSettingsComponent implements OnInit {
     // Llamar al servicio
     this.adminService.updatePromptConfig(cleanPrompt, cleanTemp, cleanProvider, cleanMaxQuestions).subscribe({
       next: (response: any) => {
-        // if (response.ok) {
-        //   // Actualizar originals para resincronizar
-        //   this.originalPromptText.set(formValue.promptText);
-        //   this.originalTemperature.set(formValue.temperature);
-        //   this.hasChanges.set(false);
-
-        //   this.successMessage.set('Configuración actualizada exitosamente');
-        //   this.isSaving.set(false);
-
-        //   // Limpiar mensaje después de 3 segundos
-        //   setTimeout(() => this.successMessage.set(''), 3000);
         if (response.ok) {
           this.originalPromptText.set(cleanPrompt); // Usa la variable limpia
           this.originalTemperature.set(cleanTemp);
@@ -319,24 +316,33 @@ export class AdminSettingsComponent implements OnInit {
   }
 
   /**
-   * Restaura el prompt por defecto (confirmación)
+   * Valida que el prompt contenga los placeholders necesarios
    */
-  resetToDefault(): void {
-    const defaultPrompt = `Eres un experto en medicina y salud pública. Tu tarea es generar preguntas de opción múltiple educativas sobre temas médicos.
+  private validatePlaceholders(prompt: string): string[] {
+    const required = ['{topic}', '{difficulty}', '{difficulty_desc}', '{language}'];
+    const missing: string[] = [];
 
-INSTRUCCIONES ESTRICTAS:
-1. La pregunta debe ser clara, específica y basada en evidencia científica.
-2. Proporciona exactamente 4 opciones de respuesta (A, B, C, D).
-3. Solo UNA opción debe ser correcta.
-4. Las opciones incorrectas deben ser plausibles pero claramente erróneas.
-5. Incluye una explicación educativa de la respuesta correcta.
-6. Formato: Pregunta | Opción A | Opción B | Opción C | Opción D | Respuesta Correcta | Explicación
+    required.forEach(p => {
+      if (!prompt.includes(p)) {
+        missing.push(p);
+      }
+    });
 
-RESTRICCIONES:
-- No incluyas información falsa o engañosa.
-- Las preguntas deben ser apropiadas para estudiantes de medicina.
-- Evita preguntas ambiguas o con múltiples interpretaciones.
-- Sé consistente con la terminología médica estándar.`;
+    return missing;
+  }
+
+  /**
+   * Cambia la visibilidad de la guía del prompt
+   */
+  togglePromptGuide(): void {
+    this.showPromptGuide.update(v => !v);
+  }
+
+  /**
+   * Aplica el prompt por defecto al formulario
+   */
+  applyDefaultPrompt(): void {
+    const defaultPrompt = this.translate.instant('admin.settings.defaultPromptTemplate');
 
     this.promptConfigForm.patchValue({
       promptText: defaultPrompt,
@@ -459,7 +465,7 @@ RESTRICCIONES:
   /**
    * Valida que solo se ingresen números en el input de maxQuestions
    */
-  onMaxQuestionsInput(event: Event): void {
+  onMaxQuestionsInput(event: any): void {
     const input = event.target as HTMLInputElement;
     let value = input.value;
 
@@ -481,7 +487,7 @@ RESTRICCIONES:
   /**
    * Valida y ajusta el valor cuando el input pierde el foco
    */
-  onMaxQuestionsBlur(event: Event): void {
+  onMaxQuestionsBlur(event: any): void {
     const input = event.target as HTMLInputElement;
     let value = input.value;
 
