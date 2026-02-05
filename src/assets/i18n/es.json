@@ -27,7 +27,12 @@
     "language": "Idioma",
     "spanish": "Español",
     "english": "Inglés",
-    "optional": "Opcional"
+    "optional": "Opcional",
+    "connection_error": "Error de conexión con el servidor. Intenta de nuevo.",
+    "not_found": "Recurso no encontrado.",
+    "server_error": "Error interno del servidor. Intenta más tarde.",
+    "bad_request": "La solicitud es inválida.",
+    "unknown_error": "Ha ocurrido un error inesperado. Intenta de nuevo."
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -35,7 +40,9 @@
     "email": "Correo electrónico",
     "password": "Contraseña",
     "loginButton": "Ingresar",
-    "invalidCredentials": "Credenciales inválidas"
+    "invalidCredentials": "Credenciales inválidas",
+    "session_expired": "Tu sesión ha expirado. Por favor inicia sesión de nuevo.",
+    "forbidden": "No tienes permiso para acceder a este recurso."
   },
   "game": {
     "start": {
@@ -275,7 +282,8 @@
       "updated": "Actualizado",
       "complete": "Completo",
       "partial": "Parcial",
-      "unauthorized": "No autorizado. Por favor, inicia sesión nuevamente."
+      "unauthorized": "No autorizado. Por favor, inicia sesión nuevamente.",
+      "connection_error": "No se puede conectar al servidor. Verifica la conexión con el backend."
     },
     "rooms": {
       "title": "Gestión de Salas",

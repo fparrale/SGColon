@@ -27,7 +27,12 @@
     "language": "Language",
     "spanish": "Spanish",
     "english": "English",
-    "optional": "Optional"
+    "optional": "Optional",
+    "connection_error": "Connection error with the server. Please try again.",
+    "not_found": "Resource not found.",
+    "server_error": "Internal server error. Please try again later.",
+    "bad_request": "The request is invalid.",
+    "unknown_error": "An unexpected error occurred. Please try again."
   },
   "auth": {
     "login": "Login",
@@ -35,7 +40,9 @@
     "email": "Email",
     "password": "Password",
     "loginButton": "Login",
-    "invalidCredentials": "Invalid credentials"
+    "invalidCredentials": "Invalid credentials",
+    "session_expired": "Your session has expired. Please log in again.",
+    "forbidden": "You do not have permission to access this resource."
   },
   "game": {
     "start": {
@@ -275,7 +282,8 @@
       "updated": "Updated",
       "complete": "Complete",
       "partial": "Partial",
-      "unauthorized": "Unauthorized. Please log in again."
+      "unauthorized": "Unauthorized. Please log in again.",
+      "connection_error": "Cannot connect to server. Please check your backend connection."
     },
     "rooms": {
       "title": "Room Management",
