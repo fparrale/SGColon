@@ -115,7 +115,7 @@
 }
 
 .nav-link.active {
-  background-color: #3b82f6;
+  background-color: var(--game-primary);
   color: #fff;
 }
 

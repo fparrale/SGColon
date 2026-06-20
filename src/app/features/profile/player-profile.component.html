@@ -23,16 +23,19 @@
   <!-- Profile Content -->
   @if (!isLoading() && !errorMessage() && playerStats()) {
   <div class="profile-content">
-    <!-- Header Card -->
-    <div class="profile-header card">
-      <div class="card-body">
-        <div class="d-flex align-items-center gap-3 mb-3">
-          <i class="fas fa-user fs-3x text-primary"></i>
-          <div class="header-info">
-            <h1 class="profile-title">{{ playerName() }}</h1>
-            <p class="profile-subtitle">{{ 'profile.playerProfile' | translate }}</p>
-          </div>
-        </div>
+    <!-- Hero band (identity + lead stat; Fase 5 will add XP/Rango here) -->
+    <div class="profile-hero game-glass">
+      <div class="profile-hero-avatar">
+        <i class="fas fa-user-astronaut"></i>
+      </div>
+      <div class="profile-hero-info">
+        <h1 class="profile-title">{{ playerName() }}</h1>
+        <p class="profile-subtitle">{{ 'profile.playerProfile' | translate }}</p>
+        <!-- Fase 5: XP / Rango progress bar slot -->
+      </div>
+      <div class="profile-hero-highlight">
+        <span class="hero-highlight-value">{{ playerStats()?.high_score || 0 }}</span>
+        <span class="hero-highlight-label">{{ 'profile.highScore' | translate }}</span>
       </div>
     </div>
 
@@ -236,11 +239,11 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <button class="btn btn-primary btn-lg btn-play" (click)="playAgain()">
+      <button class="game-btn game-btn-primary btn-lg btn-play" (click)="playAgain()">
         <i class="fas fa-gamepad"></i>
         {{ 'profile.playAgain' | translate }}
       </button>
-      <button class="btn btn-secondary btn-lg btn-home" (click)="goToHome()">
+      <button class="game-btn game-btn-ghost btn-lg btn-home" (click)="goToHome()">
         <i class="fas fa-home"></i>
         {{ 'profile.backToHome' | translate }}
       </button>

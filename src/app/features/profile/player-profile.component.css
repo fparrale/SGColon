@@ -3,9 +3,8 @@
    ============================================================================ */
 .profile-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--game-gradient-bg);
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
 /* ============================================================================
@@ -78,6 +77,68 @@
 }
 
 /* ============================================================================
+   HERO BAND (player identity + lead stat; Fase 5 adds XP/Rango here)
+   ============================================================================ */
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.profile-hero-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--game-gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.profile-hero-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-hero-highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: color-mix(in srgb, var(--game-reward) 18%, transparent);
+  border-radius: var(--rounded-xl);
+  flex-shrink: 0;
+}
+
+.hero-highlight-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--game-reward-light);
+  line-height: 1;
+}
+
+.hero-highlight-label {
+  font-size: var(--font-size-xs);
+  color: var(--game-text-on-dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--spacing-xs);
+}
+
+@media (max-width: 480px) {
+  .profile-hero {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-md);
+  }
+}
+
+/* ============================================================================
    PROFILE HEADER
    ============================================================================ */
 .profile-header {
@@ -114,16 +175,16 @@
 
 .profile-title {
   margin: 0;
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--game-text-on-dark);
   line-height: 1.2;
 }
 
 .profile-subtitle {
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: #7f8c8d;
+  margin: var(--spacing-xs) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--game-text-on-dark-muted);
   font-weight: 500;
 }
 
@@ -177,7 +238,7 @@
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #7f8c8d;
+  color: var(--gray-500);
   letter-spacing: 0.5px;
 }
 
@@ -185,7 +246,7 @@
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 /* ============================================================================
@@ -227,7 +288,7 @@
 }
 
 .streak-card:hover {
-  border-color: #667eea;
+  border-color: var(--game-primary);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
@@ -285,7 +346,7 @@
 .streak-label {
   font-size: 11px;
   text-transform: uppercase;
-  color: #7f8c8d;
+  color: var(--gray-500);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -293,7 +354,7 @@
 .streak-value {
   font-size: 32px;
   font-weight: 800;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .streak-badge {
@@ -320,7 +381,7 @@
   width: 24px;
   height: 24px;
   border: 3px solid #e8ecf1;
-  border-top-color: #667eea;
+  border-top-color: var(--game-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -351,16 +412,17 @@
 }
 
 .card-header {
-  background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
-  padding: 20px 24px;
-  border-bottom: 1px solid #e8ecf1;
+  background: var(--gray-50);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-200);
+  border-left: 4px solid var(--game-primary);
 }
 
 .section-title {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .card-body {
@@ -383,7 +445,7 @@
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #7f8c8d;
+  color: var(--gray-500);
   letter-spacing: 0.5px;
 }
 
@@ -391,7 +453,7 @@
   margin: 0;
   font-size: 24px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .difficulty-bar {
@@ -439,7 +501,7 @@
   background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
   border-radius: 10px;
   padding: 20px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--game-primary);
   transition: all 0.3s ease;
 }
 
@@ -460,13 +522,13 @@
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .topic-badge {
   display: inline-block;
-  background: rgba(102, 126, 234, 0.15);
-  color: #667eea;
+  background: color-mix(in srgb, var(--game-primary) 15%, transparent);
+  color: var(--game-primary);
   font-size: 11px;
   font-weight: 600;
   padding: 4px 10px;
@@ -491,26 +553,26 @@
   font-size: 11px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #95a5a6;
+  color: var(--gray-400);
   letter-spacing: 0.4px;
 }
 
 .stat-val {
   font-size: 16px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .accuracy-high {
-  color: #22c55e;
+  color: var(--game-correct);
 }
 
 .accuracy-medium {
-  color: #f59e0b;
+  color: var(--game-warning);
 }
 
 .accuracy-low {
-  color: #dc2626;
+  color: var(--game-incorrect);
 }
 
 .accuracy-bar {
@@ -524,13 +586,13 @@
 .accuracy-progress {
   height: 100%;
   border-radius: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: var(--game-gradient-primary);
   transition: width 0.3s ease;
 }
 
 .no-data {
   text-align: center;
-  color: #7f8c8d;
+  color: var(--gray-500);
   font-size: 14px;
   margin: 20px 0;
   padding: 20px;
@@ -549,50 +611,13 @@
   margin-bottom: 30px;
 }
 
-.btn {
-  padding: 14px 28px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
+/* Buttons compose the shared .game-btn; .btn-lg only handles row sizing */
 .btn-lg {
-  padding: 16px 32px;
-  font-size: 16px;
   flex: 1;
   min-width: 200px;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-secondary {
-  background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
-}
-
-.btn-secondary:hover {
-  background: #f8f9fa;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.btn i {
+.action-buttons .game-btn i {
   font-size: 20px;
   line-height: 1;
 }
@@ -651,7 +676,7 @@
 }
 
 .text-primary {
-  color: #667eea !important;
+  color: var(--game-primary) !important;
 }
 
 .text-success {
@@ -764,7 +789,7 @@
 
 .error-question {
   margin: 0 0 12px;
-  color: #2c3e50;
+  color: var(--gray-800);
   line-height: 1.4;
 }
 
@@ -788,7 +813,7 @@
   padding-top: 12px;
   border-top: 1px solid rgba(220, 38, 38, 0.1);
   font-size: 14px;
-  color: #7f8c8d;
+  color: var(--gray-500);
   display: flex;
   gap: 8px;
 }

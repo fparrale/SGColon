@@ -1,9 +1,9 @@
 <div class="leaderboard-container">
-  <!-- Header -->
-  <div class="leaderboard-header">
+  <!-- Header (glass, consistent with Game Board) -->
+  <div class="leaderboard-header game-glass">
     <div class="header-content">
       <div class="header-title">
-        <i class="fas fa-podium fs-2x text-warning"></i>
+        <i class="fas fa-trophy"></i>
         <div class="header-text">
           <h1>{{ 'leaderboard.title' | translate }}</h1>
           <p class="header-subtitle">{{ 'leaderboard.subtitle' | translate }}</p>
@@ -36,6 +36,35 @@
   <!-- Leaderboard Content -->
   @if (!isLoading() && !errorMessage()) {
   <div class="leaderboard-content">
+    <!-- Primary CTA (visible without scrolling) -->
+    <div class="leaderboard-cta">
+      <button class="game-btn game-btn-primary game-btn-lg" (click)="goToGame()">
+        <i class="fas fa-gamepad"></i>
+        {{ 'leaderboard.playNow' | translate }}
+      </button>
+    </div>
+
+    <!-- Podium: Top 3 -->
+    @if (leaderboard().length > 0) {
+    <div class="podium">
+      @for (player of leaderboard().slice(0, 3); track player.player_id) {
+      <div class="podium-card" [ngClass]="'podium-' + player.rank"
+        [class.current-player]="isCurrentPlayer(player.player_id)">
+        <div class="podium-medal">
+          <i class="fas fa-crown"></i>
+          <span class="podium-rank">{{ player.rank }}</span>
+        </div>
+        <p class="podium-name">{{ player.player_name }}</p>
+        <p class="podium-score">{{ player.high_score }}</p>
+        <span class="podium-accuracy"
+          [ngClass]="'accuracy-' + (player.overall_accuracy >= 75 ? 'high' : player.overall_accuracy >= 50 ? 'medium' : 'low')">
+          {{ formatAccuracy(player.overall_accuracy) }}%
+        </span>
+      </div>
+      }
+    </div>
+    }
+
     <!-- My Rank Info Card -->
     @if (myRank()) {
     <div class="my-rank-card">
@@ -171,21 +200,16 @@
       </div>
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Secondary Actions -->
     <div class="action-buttons">
-      <button class="btn btn-primary btn-lg" (click)="goToGame()">
-        <i class="fas fa-gamepad"></i>
-        {{ 'leaderboard.playNow' | translate }}
-      </button>
-
       @if (myPlayerId()) {
-      <button class="btn btn-info btn-lg" (click)="goToProfile()">
+      <button class="game-btn game-btn-ghost btn-lg" (click)="goToProfile()">
         <i class="fas fa-user-circle"></i>
         {{ 'game.over.viewProfile' | translate }}
       </button>
       }
 
-      <button class="btn btn-secondary btn-lg" (click)="goToPlay()">
+      <button class="game-btn game-btn-ghost btn-lg" (click)="goToPlay()">
         <i class="fas fa-home"></i>
         {{ 'leaderboard.backToMenu' | translate }}
       </button>

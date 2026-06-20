@@ -282,12 +282,18 @@ export class GameBoardComponent implements OnInit {
     this.selectedOptionId.set(optionId);
   }
 
-  submitAnswer(): void {
+  submitAnswer(isTimeout: boolean = false): void {
     const sessionId = this.sessionId();
     const question = this.currentQuestion();
     const selectedId = this.selectedOptionId();
 
-    if (!sessionId || !question || selectedId === null) {
+    if (!sessionId || !question) {
+      return;
+    }
+
+    // Manual submit requires a selection. On timeout we auto-submit a null
+    // answer: the backend processes it as incorrect and deducts a life.
+    if (selectedId === null && !isTimeout) {
       this.notification.warning(this.translate.instant('game.notifications.board.select_option'), NOTIFICATION_DURATION.DEFAULT);
       return;
     }
@@ -373,9 +379,9 @@ export class GameBoardComponent implements OnInit {
       this.questionTimer.update((t) => {
         if (t <= 1) {
           this.stopTimer();
-          // Auto-submit cuando se acabe el tiempo
+          // Auto-submit on timeout (sends null = incorrect, even with no selection)
           if (this.gameState() === 'playing' && !this.isAnswering()) {
-            this.submitAnswer();
+            this.submitAnswer(true);
           }
           return 0;
         }

@@ -1063,3 +1063,220 @@ select:focus {
     display: none;
   }
 }
+
+/* ============================================================
+   GAME DESIGN SYSTEM  (player-side: game-board, game-start,
+   leaderboard, profile)
+   ------------------------------------------------------------
+   Reuses the global scales above (--spacing-*, --font-size-*,
+   --rounded-*, --shadow-*, --transition-*). Adds ONLY what does
+   not already exist: color palette, gradients, glass surfaces,
+   colored shadows and shared game components.
+   Palette: Salud Profesional (navy/teal) + Recompensa (amber).
+   ============================================================ */
+:root {
+  /* --- Backgrounds --- */
+  --game-bg-start: #0f172a;
+  /* slate-950 */
+  --game-bg-end: #1e3a5f;
+  /* navy */
+
+  /* --- Primary (teal / clinical, trustworthy) --- */
+  --game-primary: #0d9488;
+  /* teal-600 */
+  --game-primary-light: #2dd4bf;
+  /* teal-400 */
+  --game-primary-dark: #0f766e;
+  /* teal-700 */
+
+  /* --- Reward (amber / XP, badges, streaks) --- */
+  --game-reward: #f59e0b;
+  /* amber-500 */
+  --game-reward-light: #fcd34d;
+  /* amber-300 */
+  --game-reward-dark: #d97706;
+  /* amber-600 */
+
+  /* --- Semantic answer states (alias global tokens: single source of truth) --- */
+  --game-correct: var(--success);
+  --game-correct-dark: #059669;
+  --game-incorrect: var(--danger);
+  --game-incorrect-dark: #dc2626;
+  --game-warning: var(--warning);
+  --game-info: var(--info);
+
+  /* --- Surfaces --- */
+  --game-surface: rgba(255, 255, 255, 0.97);
+  --game-surface-solid: #ffffff;
+  --game-glass-bg: rgba(255, 255, 255, 0.08);
+  --game-glass-border: rgba(255, 255, 255, 0.16);
+  --game-explanation-bg: #f0fdfa;
+  /* teal-50: fondo del bloque educativo */
+
+  /* --- Text over dark backgrounds --- */
+  --game-text-on-dark: #f1f5f9;
+  --game-text-on-dark-muted: #94a3b8;
+
+  /* --- Ranking --- */
+  --rank-gold: #f59e0b;
+  --rank-silver: #94a3b8;
+  --rank-bronze: #d97706;
+
+  /* --- Gradients --- */
+  --game-gradient-bg: linear-gradient(135deg, var(--game-bg-start) 0%, var(--game-bg-end) 100%);
+  --game-gradient-primary: linear-gradient(135deg, var(--game-primary) 0%, var(--game-primary-dark) 100%);
+  --game-gradient-reward: linear-gradient(135deg, var(--game-reward) 0%, var(--game-reward-dark) 100%);
+
+  /* --- Colored shadows / glow (not covered by global neutral --shadow-*) --- */
+  --game-shadow-primary: 0 8px 24px rgba(13, 148, 136, 0.4);
+  --game-shadow-reward: 0 8px 24px rgba(245, 158, 11, 0.35);
+  --game-shadow-danger: 0 8px 24px rgba(239, 68, 68, 0.4);
+  --game-shadow-card: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+  /* --- Responsive question size (beyond the global type scale) --- */
+  --game-question-size: clamp(1.375rem, 1rem + 2vw, 2rem);
+}
+
+/* ---------- Foundations ---------- */
+.game-gradient-bg {
+  min-height: 100vh;
+  background: var(--game-gradient-bg);
+}
+
+.game-surface {
+  background: var(--game-surface);
+  border-radius: var(--rounded-2xl);
+  box-shadow: var(--game-shadow-card);
+}
+
+/* Glassmorphism: ONLY for topbar, hero, modal, overlay (not content cards) */
+.game-glass {
+  background: var(--game-glass-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--game-glass-border);
+  border-radius: var(--rounded-2xl);
+}
+
+/* ---------- Shared components ---------- */
+
+/* Button — consolidates btn-play / btn-submit / btn-next / btn-profile /
+   leaderboard.btn-primary / profile.btn-primary into one base + variants */
+.game-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border: none;
+  border-radius: var(--rounded-xl);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.game-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.game-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.game-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-btn-primary {
+  background: var(--game-gradient-primary);
+  color: #fff;
+}
+
+.game-btn-primary:hover:not(:disabled) {
+  box-shadow: var(--game-shadow-primary);
+}
+
+.game-btn-reward {
+  background: var(--game-gradient-reward);
+  color: #fff;
+}
+
+.game-btn-reward:hover:not(:disabled) {
+  box-shadow: var(--game-shadow-reward);
+}
+
+.game-btn-ghost {
+  background: var(--game-glass-bg);
+  color: var(--game-text-on-dark);
+  border: 1px solid var(--game-glass-border);
+}
+
+.game-btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.game-btn-danger {
+  background: linear-gradient(135deg, var(--game-incorrect) 0%, var(--game-incorrect-dark) 100%);
+  color: #fff;
+}
+
+.game-btn-danger:hover:not(:disabled) {
+  box-shadow: var(--game-shadow-danger);
+}
+
+.game-btn-lg {
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Card — solid white content surface over the dark gradient */
+.game-card {
+  background: var(--game-surface);
+  border-radius: var(--rounded-2xl);
+  box-shadow: var(--game-shadow-card);
+  padding: var(--spacing-2xl);
+}
+
+/* Badge — base + ranking variants (consolidates rank badges across files) */
+.game-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.game-badge-rank-gold {
+  background: var(--game-gradient-reward);
+  color: #fff;
+}
+
+.game-badge-rank-silver {
+  background: linear-gradient(135deg, var(--rank-silver) 0%, #64748b 100%);
+  color: #fff;
+}
+
+.game-badge-rank-bronze {
+  background: linear-gradient(135deg, var(--rank-bronze) 0%, #92400e 100%);
+  color: #fff;
+}
+
+/* Accuracy color helpers — consolidates .accuracy-* duplicated in
+   leaderboard.css and player-profile.css into one shared definition */
+.game-accuracy-high {
+  color: var(--game-correct);
+}
+
+.game-accuracy-medium {
+  color: var(--game-warning);
+}
+
+.game-accuracy-low {
+  color: var(--game-incorrect);
+}

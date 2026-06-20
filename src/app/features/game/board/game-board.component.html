@@ -1,86 +1,62 @@
-<div class="game-board-container">
-  <!-- HEADER -->
-  <div class="game-header">
-    <div class="header-left">
-      <div class="player-info d-flex align-items-center gap-2">
-        <i class="fas fa-user-circle fs-2 text-primary"></i>
-        <span class="player-name">{{ playerName() }}</span>
-      </div>
+<div class="game-board-container game-gradient-bg">
+  <!-- ============ UNIFIED TOPBAR (glass) ============ -->
+  <header class="game-topbar game-glass">
+    <!-- Player -->
+    <div class="topbar-player">
+      <i class="fas fa-user-circle"></i>
+      <span class="player-name">{{ playerName() }}</span>
     </div>
 
-    <div class="header-center">
-      <div class="difficulty-section">
-        <span class="difficulty-label">{{ 'game.play.difficulty' | translate }}</span>
-        <div class="difficulty-bar">
-          <div class="difficulty-progress" [style.width.%]="difficultyPercentage()"></div>
-        </div>
-        <span class="difficulty-value">{{ difficulty().toFixed(1) }}/5</span>
+    <!-- Progress -->
+    <div class="topbar-progress">
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="progressPercentage()"></div>
       </div>
+      <span class="progress-count">{{ questionCount() }}/{{ maxQuestions() }}</span>
     </div>
 
-    <div class="header-right">
-      <div class="stats-group d-flex align-items-center gap-4">
-        <div class="stat-item d-flex align-items-center gap-2">
-          <i class="fas fa-heart fs-1 text-danger me-2"></i>
-          <span class="lives-value">{{ lives() }}/3</span>
-        </div>
-        <div class="stat-item d-flex align-items-center gap-2">
-          <i class="fas fa-trophy fs-1 text-warning me-2"></i>
-          <span class="score-value">{{ score() }}</span>
-        </div>
-      </div>
-
-      <div class="game-controls ml-4" style="margin-left: 1rem;">
-        <button class="btn-abandon" (click)="openAbandonModal()"
-          [disabled]="gameState() !== 'playing' && gameState() !== 'feedback'"
-          [attr.aria-label]="'game.abandon.button' | translate">
-          <i class="fas fa-door-open"></i>
-          <span class="d-none d-md-inline ms-2">{{ 'game.abandon.button' | translate }}</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PROGRESS BAR -->
-  <div class="progress-container">
-    <div class="progress-header">
-      <span class="progress-label">
-        <i class="fas fa-list-check"></i>
-        {{ 'game.play.quizProgress' | translate }}
+    <!-- Stats + abandon -->
+    <div class="topbar-stats">
+      @if (gameState() === 'playing') {
+      <span class="topbar-chip timer" [class]="'topbar-chip timer ' + getTimerColor()"
+        [attr.aria-label]="'game.play.difficulty' | translate">
+        <i class="fas fa-clock"></i>{{ questionTimer() }}s
       </span>
-      <span class="progress-count">
-        {{ questionCount() }} / {{ maxQuestions() }} {{ 'game.play.questionsCount' | translate }}
-      </span>
-    </div>
-
-    <div class="progress-bar-wrapper">
-      <div class="progress-bar-fill" [style.width.%]="progressPercentage()"></div>
-    </div>
-
-    <div class="progress-info">
-      <span class="remaining-questions">
-        <i class="fas fa-hourglass-half"></i>
-        {{ remainingQuestions() }} {{ 'game.play.remaining' | translate }}
-      </span>
-
-      @if (lockedLevels().length > 0) {
-      <div class="locked-levels">
-        <span class="locked-label">
-          <i class="fas fa-lock"></i>
-          {{ 'game.play.completedLevels' | translate }}:
-        </span>
-        @for (level of lockedLevels(); track level) {
-        <span class="level-badge">
-          {{ 'game.play.level' | translate }} {{ level }}
-        </span>
-        }
-      </div>
       }
+      <span class="topbar-chip difficulty" [title]="'game.play.difficulty' | translate">
+        <i class="fas fa-bolt"></i>{{ difficulty().toFixed(1) }}
+      </span>
+      <span class="topbar-chip lives">
+        <i class="fas fa-heart"></i>{{ lives() }}/3
+      </span>
+      <span class="topbar-chip score">
+        <i class="fas fa-trophy"></i>{{ score() }}
+      </span>
+      <button class="topbar-abandon" (click)="openAbandonModal()"
+        [disabled]="gameState() !== 'playing' && gameState() !== 'feedback'"
+        [attr.aria-label]="'game.abandon.button' | translate">
+        <i class="fas fa-door-open"></i>
+      </button>
     </div>
-  </div>
+  </header>
 
-  <!-- MAIN CONTENT -->
-  <div class="game-content">
+  <!-- ============ COMPLETED LEVELS (discrete row) ============ -->
+  @if (lockedLevels().length > 0) {
+  <div class="locked-levels-row">
+    <span class="locked-levels-label">
+      <i class="fas fa-lock"></i>
+      {{ 'game.play.completedLevels' | translate }}:
+    </span>
+    @for (level of lockedLevels(); track level) {
+    <span class="game-badge level-badge">
+      {{ 'game.play.level' | translate }} {{ level }}
+    </span>
+    }
+  </div>
+  }
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="game-content">
     <!-- LOADING STATE -->
     @if (gameState() === 'loading') {
     <div class="loading-screen">
@@ -89,143 +65,102 @@
     </div>
     }
 
-    <!-- PLAYING STATE -->
-    @if (gameState() === 'playing' && currentQuestion()) {
-    <div class="playing-screen">
-      <!-- Question Card -->
-      <div class="question-section">
-        <div class="question-card">
-          <div class="question-header">
-            <span class="question-number">{{ 'game.play.question' | translate }} #{{ questionCount() }}</span>
-            <div [class]="'timer ' + getTimerColor()" class="d-flex align-items-center gap-2">
-              <i class="fas fa-clock fs-1 text-primary me-2"></i>
-              <span class="timer-value">{{ questionTimer() }}s</span>
-            </div>
-          </div>
-          <div class="question-statement">
-            {{ currentQuestion()!.statement }}
-          </div>
-        </div>
-      </div>
+    <!-- PLAYING + FEEDBACK share the question & options (feedback = locked) -->
+    @if ((gameState() === 'playing' || gameState() === 'feedback') && currentQuestion()) {
+    <div class="play-area">
+      <!-- Question (dominant) -->
+      <section class="question-section">
+        <span class="question-number">{{ 'game.play.question' | translate }} #{{ questionCount() }}</span>
+        <h1 class="question-statement">{{ currentQuestion()!.statement }}</h1>
+      </section>
 
-      <!-- Options Grid -->
-      <div class="options-section">
+      <!-- Options -->
+      <section class="options-section">
         <div class="options-grid">
           @for (option of currentQuestion()!.options; track option.id) {
           <button class="option-button" [ngClass]="getOptionClass(option.id)" (click)="selectOption(option.id)"
-            [disabled]="isAnswering()">
+            [disabled]="isAnswering() || gameState() === 'feedback'">
             <span class="option-text">{{ option.text }}</span>
             <span class="option-indicator"></span>
           </button>
           }
         </div>
-      </div>
+      </section>
 
-      <!-- Submit Button -->
+      <!-- PLAYING: confirm button -->
+      @if (gameState() === 'playing') {
       <div class="action-section">
-        <button class="btn btn-submit" (click)="submitAnswer()"
+        <button class="game-btn game-btn-primary game-btn-lg btn-confirm" (click)="submitAnswer()"
           [disabled]="selectedOptionId() === null || isAnswering()">
-          <span *ngIf="!isAnswering()">{{ 'game.play.submitAnswer' | translate }}</span>
-          <span *ngIf="isAnswering()">
+          @if (!isAnswering()) {
+          <span>{{ 'game.play.submitAnswer' | translate }}</span>
+          } @else {
+          <span class="d-flex align-items-center gap-2">
             <span class="spinner-small"></span> {{ 'game.play.verifying' | translate }}
           </span>
+          }
         </button>
       </div>
-    </div>
-    }
+      }
 
-    <!-- FEEDBACK STATE -->
-    @if (gameState() === 'feedback' && feedbackData()) {
-    <div class="feedback-screen">
-      <!-- Feedback Card -->
-      <div class="feedback-card" [ngClass]="isAnswerCorrect() ? 'success' : 'error'">
-        <!-- Result Icon and Status -->
-        <div class="feedback-header d-flex flex-column align-items-center gap-3">
-          @if (isAnswerCorrect()) {
-          <i class="fas fa-check fs-2x text-success"></i>
-          } @else {
-          <i class="fas fa-times fs-2x text-danger"></i>
-          }
-          <h2 class="result-title">
-            {{ isAnswerCorrect() ? ('game.play.correct' | translate) : ('game.play.incorrect' | translate) }}
-          </h2>
+      <!-- FEEDBACK: result banner + educational explanation (protagonist) + next -->
+      @if (gameState() === 'feedback' && feedbackData()) {
+      <section class="feedback-block" [class.is-correct]="isAnswerCorrect()" [class.is-incorrect]="!isAnswerCorrect()">
+        <!-- Compact result banner -->
+        <div class="result-banner">
+          <div class="result-banner-left">
+            @if (isAnswerCorrect()) {
+            <i class="fas fa-circle-check"></i>
+            } @else {
+            <i class="fas fa-circle-xmark"></i>
+            }
+            <span class="result-title">
+              {{ isAnswerCorrect() ? ('game.play.correct' | translate) : ('game.play.incorrect' | translate) }}
+            </span>
+          </div>
+          <span class="result-delta">
+            {{ isAnswerCorrect() ? '+' : '' }}{{ feedbackData()?.score }}
+          </span>
         </div>
 
-        <!-- Score Delta -->
-        <div class="score-delta" [ngClass]="isAnswerCorrect() ? 'positive' : 'neutral'">
-          @if (isAnswerCorrect()) {
-          <span class="delta-icon">+{{ feedbackData()?.score }}</span>
-          } @else {
-          <span class="delta-icon">{{ feedbackData()?.score }}</span>
-          }
-        </div>
-
-        <!-- Explanation Section (CRÍTICO - Educativo) -->
+        <!-- Educational explanation (PROTAGONIST) -->
         <div class="explanation-section">
-          <span class="explanation-label d-flex align-items-center gap-2">
-            <i class="fas fa-book fs-1 text-primary"></i>
-            {{ 'game.play.medicalExplanation' | translate }}:
+          <span class="explanation-label">
+            <i class="fas fa-book-medical"></i>
+            {{ 'game.play.medicalExplanation' | translate }}
           </span>
           <p class="explanation-text">
             {{ feedbackData()?.explanation || ('game.play.noExplanation' | translate) }}
           </p>
         </div>
+      </section>
 
-        <!-- Correct Option Info -->
-        <div class="correct-answer-section">
-          <span class="correct-label">{{ 'game.play.correctAnswer' | translate }}:</span>
-          <div class="correct-option">
-            @for (option of currentQuestion()!.options; track option.id) {
-            @if (option.id === feedbackData()?.correct_option_id) {
-            {{ option.text }}
-            }
-            }
-          </div>
-        </div>
-
-        <!-- Stats Update -->
-        <div class="stats-update">
-          <div class="stat-update-item">
-            <span class="stat-update-label">{{ 'game.play.totalScore' | translate }}:</span>
-            <span class="stat-update-value">{{ score() }}</span>
-          </div>
-          <div class="stat-update-item">
-            <span class="stat-update-label">{{ 'game.play.remainingLives' | translate }}:</span>
-            <span class="stat-update-value">{{ lives() }}/3</span>
-          </div>
-          <div class="stat-update-item">
-            <span class="stat-update-label">{{ 'game.play.newDifficulty' | translate }}:</span>
-            <span class="stat-update-value">{{ difficulty().toFixed(1) }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Next Button -->
       <div class="action-section">
         @if (lives() === 0) {
-        <button class="btn btn-next btn-danger" (click)="viewResults()">
+        <button class="game-btn game-btn-danger game-btn-lg" (click)="viewResults()">
           <i class="fas fa-chart-bar"></i>
           {{ 'game.play.viewResults' | translate }}
         </button>
         } @else if (isLastQuestion()) {
-        <button class="btn btn-next btn-success" (click)="viewResults()">
+        <button class="game-btn game-btn-reward game-btn-lg" (click)="viewResults()">
           <i class="fas fa-trophy"></i>
           {{ 'game.play.viewResults' | translate }}
         </button>
         } @else {
-        <button class="btn btn-next" (click)="nextQuestion()">
+        <button class="game-btn game-btn-primary game-btn-lg" (click)="nextQuestion()">
           {{ 'game.play.nextQuestion' | translate }} →
         </button>
         }
       </div>
+      }
     </div>
     }
 
     <!-- GAME OVER STATE (Lives = 0) -->
     @if (gameState() === 'gameover') {
     <div class="gameover-screen">
-      <div class="gameover-card d-flex flex-column align-items-center text-center">
-        <i class="fas fa-heart-broken fs-2x text-danger mb-4"></i>
+      <div class="game-card gameover-card is-gameover">
+        <i class="fas fa-heart-broken gameover-icon text-danger"></i>
         <h2 class="gameover-title">{{ 'game.over.title' | translate }}</h2>
         <p class="gameover-message">
           {{ 'game.over.outOfLives' | translate }} {{ questionCount() }} {{ 'game.over.questionsWithScore' | translate
@@ -248,8 +183,8 @@
             <span class="stat-label">{{ 'game.play.difficulty' | translate }}</span>
           </div>
         </div>
-        <div class="action-section mt-4">
-          <button class="btn btn-profile" (click)="goToProfile()">
+        <div class="action-section">
+          <button class="game-btn game-btn-primary game-btn-lg" (click)="goToProfile()">
             <i class="fas fa-user-circle"></i>
             {{ 'game.over.viewProfile' | translate }}
           </button>
@@ -261,8 +196,8 @@
     <!-- COMPLETED STATE (Quiz Finished Successfully) -->
     @if (gameState() === 'completed') {
     <div class="gameover-screen">
-      <div class="gameover-card d-flex flex-column align-items-center text-center">
-        <i class="fas fa-trophy fs-2x text-success mb-4"></i>
+      <div class="game-card gameover-card is-completed">
+        <i class="fas fa-trophy gameover-icon text-success"></i>
         <h2 class="gameover-title text-success">{{ 'game.over.congratulations' | translate }}</h2>
         <p class="gameover-message">
           {{ 'game.over.quizCompleted' | translate }}
@@ -293,8 +228,8 @@
             <span class="stat-label">{{ 'game.over.finalDifficulty' | translate }}</span>
           </div>
         </div>
-        <div class="action-section mt-4">
-          <button class="btn btn-profile" (click)="goToProfile()">
+        <div class="action-section">
+          <button class="game-btn game-btn-primary game-btn-lg" (click)="goToProfile()">
             <i class="fas fa-user-circle"></i>
             {{ 'game.over.viewProfile' | translate }}
           </button>
@@ -306,21 +241,21 @@
     <!-- NO QUESTIONS AVAILABLE STATE -->
     @if (gameState() === 'no_questions') {
     <div class="gameover-screen">
-      <div class="gameover-card d-flex flex-column align-items-center text-center">
-        <i class="fas fa-exclamation-triangle fs-2x text-warning mb-4"></i>
+      <div class="game-card gameover-card is-no-questions">
+        <i class="fas fa-exclamation-triangle gameover-icon text-warning"></i>
         <h2 class="gameover-title text-warning">{{ 'game.over.noQuestionsTitle' | translate }}</h2>
         <p class="gameover-message">
           {{ 'game.over.noQuestionsMessage' | translate }}
         </p>
-        <div class="action-section mt-4">
-          <button class="btn btn-profile" (click)="goToHome()">
-            <i class="fas fa-home me-2"></i>{{ 'game.over.backToStart' | translate }}
+        <div class="action-section">
+          <button class="game-btn game-btn-primary game-btn-lg" (click)="goToHome()">
+            <i class="fas fa-home"></i>{{ 'game.over.backToStart' | translate }}
           </button>
         </div>
       </div>
     </div>
     }
-  </div>
+  </main>
 
   @if (showAbandonModal()) {
   <app-abandon-confirmation-modal (confirm)="confirmAbandon()" (cancel)="cancelAbandon()">

@@ -3,20 +3,16 @@
    ============================================================================ */
 .leaderboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--game-gradient-bg);
+  padding: var(--spacing-lg);
 }
 
 /* ============================================================================
    HEADER
    ============================================================================ */
 .leaderboard-header {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  padding: 40px 20px;
-  border-radius: 12px;
-  margin-bottom: 40px;
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
   text-align: center;
 }
 
@@ -36,6 +32,11 @@
 .header-title i {
   font-size: 40px;
   line-height: 1;
+  color: var(--game-reward);
+}
+
+.header-text h1 {
+  color: var(--game-text-on-dark);
 }
 
 .header-text h1 {
@@ -128,6 +129,149 @@
 }
 
 /* ============================================================================
+   PRIMARY CTA (visible without scrolling)
+   ============================================================================ */
+.leaderboard-cta {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.leaderboard-cta .game-btn {
+  min-width: 260px;
+}
+
+/* ============================================================================
+   PODIUM (Top 3)
+   ============================================================================ */
+.podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  align-items: end;
+  margin-bottom: var(--spacing-xl);
+}
+
+.podium-card {
+  background: var(--game-surface);
+  border-radius: var(--rounded-2xl);
+  box-shadow: var(--game-shadow-card);
+  padding: var(--spacing-lg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  border-top: 4px solid var(--rank-silver);
+}
+
+/* Visual podium order: 2nd | 1st | 3rd, with 1st elevated */
+.podium-1 {
+  order: 2;
+  border-top-color: var(--rank-gold);
+  transform: translateY(-12px);
+}
+
+.podium-2 {
+  order: 1;
+  border-top-color: var(--rank-silver);
+}
+
+.podium-3 {
+  order: 3;
+  border-top-color: var(--rank-bronze);
+}
+
+.podium-medal {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fff;
+  margin-bottom: var(--spacing-xs);
+}
+
+.podium-1 .podium-medal {
+  background: var(--game-gradient-reward);
+}
+
+.podium-2 .podium-medal {
+  background: linear-gradient(135deg, var(--rank-silver), #64748b);
+}
+
+.podium-3 .podium-medal {
+  background: linear-gradient(135deg, var(--rank-bronze), #92400e);
+}
+
+.podium-rank {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--game-surface-solid);
+  color: var(--gray-800);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.podium-name {
+  margin: 0;
+  font-weight: 700;
+  color: var(--gray-800);
+  font-size: var(--font-size-base);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podium-score {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--game-primary-dark);
+}
+
+.podium-accuracy {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--rounded-sm);
+}
+
+.podium-card.current-player {
+  outline: 2px solid var(--game-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .podium {
+    grid-template-columns: 1fr;
+  }
+
+  .podium-1,
+  .podium-2,
+  .podium-3 {
+    order: 0;
+    transform: none;
+  }
+
+  .leaderboard-cta .game-btn {
+    width: 100%;
+  }
+}
+
+/* ============================================================================
    MY RANK CARD
    ============================================================================ */
 .my-rank-card {
@@ -139,7 +283,7 @@
   gap: 20px;
   margin-bottom: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  border-left: 5px solid #667eea;
+  border-left: 5px solid var(--game-primary);
 }
 
 .rank-badge {
@@ -155,19 +299,19 @@
 }
 
 .rank-badge.rank-gold {
-  background: linear-gradient(135deg, #f59e0b, #e67e22);
+  background: var(--game-gradient-reward);
 }
 
 .rank-badge.rank-silver {
-  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  background: linear-gradient(135deg, var(--rank-silver), #64748b);
 }
 
 .rank-badge.rank-bronze {
-  background: linear-gradient(135deg, #cd7f32, #b8860b);
+  background: linear-gradient(135deg, var(--rank-bronze), #92400e);
 }
 
 .rank-badge.rank-default {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--game-gradient-primary);
 }
 
 .rank-badge i,
@@ -190,7 +334,7 @@
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #7f8c8d;
+  color: var(--gray-500);
   letter-spacing: 0.5px;
 }
 
@@ -198,7 +342,7 @@
   margin: 0;
   font-size: 24px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 /* ============================================================================
@@ -227,7 +371,7 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
   border-bottom: 2px solid #e8ecf1;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--gray-800);
   text-transform: uppercase;
   font-size: 12px;
   letter-spacing: 0.5px;
@@ -291,8 +435,9 @@
 }
 
 .table-row.current-player {
-  background-color: rgba(102, 126, 234, 0.08);
-  border-left: 4px solid #667eea;
+  background-color: color-mix(in srgb, var(--game-primary) 14%, transparent);
+  border-left: 4px solid var(--game-primary);
+  font-weight: 600;
 }
 
 .table-row td {
@@ -324,8 +469,14 @@
 }
 
 .rank-cell.rank-default {
-  background: transparent;
-  color: #7f8c8d;
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+/* Table rank number (4–10): dark on the white card, not the badge's white */
+.rank-cell .rank-number {
+  color: var(--gray-800);
+  font-size: var(--font-size-lg);
 }
 
 /* Player Cell */
@@ -343,12 +494,12 @@
 
 .player-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .you-badge {
   display: inline-block;
-  background: #667eea;
+  background: var(--game-primary);
   color: white;
   font-size: 10px;
   font-weight: 700;
@@ -364,12 +515,12 @@
 .high-score-value,
 .total-score-value {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .high-score-value,
 .total-score-value {
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Accuracy Cell */
@@ -386,24 +537,24 @@
 }
 
 .accuracy-high {
-  background: rgba(39, 174, 96, 0.1);
-  color: #22c55e;
+  background: color-mix(in srgb, var(--game-correct) 10%, transparent);
+  color: var(--game-correct);
 }
 
 .accuracy-medium {
-  background: rgba(243, 156, 18, 0.1);
-  color: #f59e0b;
+  background: color-mix(in srgb, var(--game-warning) 10%, transparent);
+  color: var(--game-warning);
 }
 
 .accuracy-low {
-  background: rgba(231, 76, 60, 0.1);
-  color: #dc2626;
+  background: color-mix(in srgb, var(--game-incorrect) 10%, transparent);
+  color: var(--game-incorrect);
 }
 
 .no-data {
   text-align: center;
   padding: 40px 20px;
-  color: #7f8c8d;
+  color: var(--gray-500);
   font-size: 16px;
 }
 
@@ -422,7 +573,7 @@
   margin: 0 0 16px;
   font-size: 16px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--gray-800);
 }
 
 .legend-items {
@@ -448,7 +599,7 @@
 
 .legend-text {
   font-size: 14px;
-  color: #2c3e50;
+  color: var(--gray-800);
   font-weight: 500;
 }
 
@@ -462,61 +613,13 @@
   margin-bottom: 30px;
 }
 
-.btn {
-  padding: 14px 28px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
+/* Buttons compose the shared .game-btn; .btn-lg only handles row sizing */
 .btn-lg {
-  padding: 16px 32px;
-  font-size: 16px;
   flex: 1;
   min-width: 200px;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-secondary {
-  background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
-}
-
-.btn-secondary:hover {
-  background: #f8f9fa;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.btn-info {
-  background: white;
-  color: #667eea;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.btn-info:hover {
-  background: #f8f9fa;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.btn i {
+.action-buttons .game-btn i {
   font-size: 20px;
   line-height: 1;
 }
@@ -555,11 +658,11 @@
 }
 
 .text-gray-400 {
-  color: #bdc3c7 !important;
+  color: var(--gray-400) !important;
 }
 
 .text-gray-500 {
-  color: #95a5a6 !important;
+  color: var(--gray-500) !important;
 }
 
 .fs-2 {

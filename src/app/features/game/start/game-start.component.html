@@ -2,23 +2,21 @@
   <!-- Background decoration -->
   <div class="background-decoration"></div>
 
+  <!-- Language Selector (top-right corner) -->
+  <div class="language-selector-wrapper">
+    <app-language-selector></app-language-selector>
+  </div>
+
   <!-- Main content -->
   <div class="content-wrapper">
-    <div class="card game-card">
-      <!-- Language Selector (top-right corner) -->
-      <div class="language-selector-wrapper">
-        <app-language-selector></app-language-selector>
-      </div>
+    <!-- Hero (over the dark background) -->
+    <div class="start-hero">
+      <i class="fas fa-brain start-hero-icon"></i>
+      <h1 class="game-title">{{ 'game.start.title' | translate }}</h1>
+      <p class="game-subtitle">{{ 'game.start.subtitle' | translate }}</p>
+    </div>
 
-      <!-- Header -->
-      <div class="card-header text-center">
-        <div class="d-flex align-items-center justify-content-center gap-3 mb-3">
-          <i class="fas fa-brain fs-3x text-primary"></i>
-        </div>
-        <h1 class="game-title">{{ 'game.start.title' | translate }}</h1>
-        <p class="game-subtitle">{{ 'game.start.subtitle' | translate }}</p>
-      </div>
-
+    <div class="card start-card">
       <!-- Form -->
       <form [formGroup]="playerForm" (ngSubmit)="onSubmit()" class="game-form">
         <!-- Name Input -->
@@ -89,7 +87,7 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-play" [disabled]="isLoading()">
+        <button type="submit" class="game-btn game-btn-primary btn-play" [disabled]="isLoading()">
           <span *ngIf="!isLoading()" class="btn-text d-flex align-items-center justify-content-center gap-2">
             <i class="fas fa-gamepad text-white"></i>
             {{ 'game.start.startButton' | translate }}
@@ -114,15 +112,15 @@
     <!-- Features section -->
     <div class="features-section">
       <div class="feature-item">
-        <i class="fas fa-bolt fs-2x text-warning"></i>
+        <i class="fas fa-bolt feature-icon"></i>
         <p class="feature-text">{{ 'game.start.features.dynamic' | translate }}</p>
       </div>
       <div class="feature-item">
-        <i class="fas fa-arrow-up fs-2x text-info"></i>
+        <i class="fas fa-arrow-up feature-icon"></i>
         <p class="feature-text">{{ 'game.start.features.adaptive' | translate }}</p>
       </div>
       <div class="feature-item">
-        <i class="fas fa-trophy fs-4x text-success"></i>
+        <i class="fas fa-trophy feature-icon"></i>
         <p class="feature-text">{{ 'game.start.features.compete' | translate }}</p>
       </div>
     </div>
